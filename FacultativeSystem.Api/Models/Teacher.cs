@@ -4,20 +4,14 @@ public class Teacher
 {
     public Guid Id { get; }
     public string Name { get; } = String.Empty;
+    public Guid CourseId { get; }
+    public Course Course { get; }
 
-    public Teacher(Guid id, string name)
+    public Teacher(Guid id, string name, Guid courseId, Course course)
     {
         Id = id;
         Name = name;
-    }
-
-    public static (Teacher Teacher, string Error) Create(Guid id, string name)
-    {
-        var error = string.Empty;
-        if(string.IsNullOrWhiteSpace(name)) error = "Name is required";
-        
-        var teacher = new Teacher(id, name);
-        
-        return (teacher, error);
+        CourseId = courseId;
+        Course = course;
     }
 }
