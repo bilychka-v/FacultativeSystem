@@ -11,7 +11,7 @@ public class CourseEntity
     
     public ICollection<StudentEntity> StudentEntities { get; set; } = new List<StudentEntity>();
     
-    [ForeignKey(("TeacherId"))]
+    [ForeignKey(("TeacherEntities"))]
     public Guid TeacherId { get; set; }
 
     public TeacherEntity TeacherEntities { get; set; } = null!;
