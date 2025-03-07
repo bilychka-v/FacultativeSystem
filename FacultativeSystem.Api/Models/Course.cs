@@ -9,22 +9,10 @@ public class Course
     public DateTime StartDate { get; } 
     public DateTime EndDate { get; }
     
-    public ICollection<Student> Students { get; } = new List<Student>();
+    public ICollection<StudentCourseGrade> StudentCourseGrades { get; } = new List<StudentCourseGrade>();
     
     [ForeignKey(("Teacher"))]
     public Guid TeacherId { get; }
     public Teacher Teacher { get; }
-
-    public Course(Guid id, string name, DateTime startDate, DateTime endDate, 
-                    ICollection<Student> students, Guid teacherId, Teacher teacher)
-    {
-        Id = id;
-        Name = name;
-        StartDate = startDate;
-        EndDate = endDate;
-        Students = students;
-        TeacherId = teacherId;
-        Teacher = teacher;
-    }
     
 }

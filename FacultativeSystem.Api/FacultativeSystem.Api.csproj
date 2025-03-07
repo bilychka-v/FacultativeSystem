@@ -18,6 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\FacultativeSystem.Application\FacultativeSystem.Application.csproj" />
       <ProjectReference Include="..\FacultativeSystem.Infrastructure\FacultativeSystem.Infrastructure.csproj" />
     </ItemGroup>
 

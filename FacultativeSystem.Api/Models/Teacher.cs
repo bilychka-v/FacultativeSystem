@@ -7,11 +7,5 @@ public class Teacher
     public Guid CourseId { get; }
     public Course Course { get; }
 
-    public Teacher(Guid id, string name, Guid courseId, Course course)
-    {
-        Id = id;
-        Name = name;
-        CourseId = courseId;
-        Course = course;
-    }
+   
 }

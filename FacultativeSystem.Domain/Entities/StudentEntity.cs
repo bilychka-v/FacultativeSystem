@@ -7,6 +7,6 @@ public class StudentEntity
     public string Feedback { get; set; } = String.Empty;
     public int Grade { get; set; }
     
-    public ICollection<CourseEntity> CourseEntities { get; set; } = new List<CourseEntity>();
+    public ICollection<StudentCourseGradeEntity> StudentCourseCourseGradeEntities { get; set; } = new List<StudentCourseGradeEntity>();
     public ICollection<TeacherEntity> TeacherEntities { get; set; } = new List<TeacherEntity>();
 }
