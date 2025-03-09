@@ -2,8 +2,7 @@ namespace FacultativeSystem.Api.Models;
 
 public class Teacher
 {
-    public string Name { get; private set; } = String.Empty;
-    public Course? Course { get; private set; }
-
-   
+    public Guid Id { get; set; }
+    public string Name { get; set; } = String.Empty;
+    // public Course? Course { get; set; }
 }

@@ -5,14 +5,12 @@ namespace FacultativeSystem.Api.Models;
 
 public class StudentCourseGrade
 {
-    [ForeignKey("Student")]
-    public Student? Student { get; private set; }
+    public Guid StudentId { get; set; }
+    
+    // public Course? Course { get; set; }
 
-    [ForeignKey("Course")]
-    public Course? Course { get; private set; }
+    public int Grade { get; set; }
+    public string Feedback { get; set; } = string.Empty;
 
-    public int Grade { get; private set; }
-    public string Feedback { get; private set; } = string.Empty;
-
-    public DateTime GradedAt { get; private set; }
+    public DateTime GradedAt { get; set; }
 }
