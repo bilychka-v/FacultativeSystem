@@ -4,15 +4,13 @@ namespace FacultativeSystem.Api.Models;
 
 public class Course
 {
-    public Guid Id { get; }
-    public string Name { get; } = String.Empty;
-    public DateTime StartDate { get; } 
-    public DateTime EndDate { get; }
+    public string Name { get; private set; } = String.Empty;
+    public DateTime StartDate { get; private set; } 
+    public DateTime EndDate { get; private set; }
     
-    public ICollection<StudentCourseGrade> StudentCourseGrades { get; } = new List<StudentCourseGrade>();
+    public ICollection<StudentCourseGrade> StudentCourseGrades { get; private set; } = new List<StudentCourseGrade>();
     
     [ForeignKey(("Teacher"))]
-    public Guid TeacherId { get; }
-    public Teacher Teacher { get; }
+    public Teacher? Teacher { get; private set; }
     
 }

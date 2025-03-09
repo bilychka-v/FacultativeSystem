@@ -1,6 +1,6 @@
 using FacultativeSystem.Domain.Entities;
 
-namespace FacultativeSystem.Infrastructure.Abstractions;
+namespace FacultativeSystem.Application.Abstractions;
 
 public interface ICourseRepository
 {

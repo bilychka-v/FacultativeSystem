@@ -1,5 +1,5 @@
+using FacultativeSystem.Application.Abstractions;
 using FacultativeSystem.Domain.Entities;
-using FacultativeSystem.Infrastructure.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 namespace FacultativeSystem.Infrastructure.Repositories;
