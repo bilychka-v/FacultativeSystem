@@ -1,9 +1,8 @@
 using FacultativeSystem.Application.Models;
-using FacultativeSystem.Domain.Entities;
 
-namespace FacultativeSystem.Application.Abstractions;
+namespace FacultativeSystem.Application.Services;
 
-public interface IStudentRepository
+public interface IStudentService
 {
     Task CreateAsync(Student student, CancellationToken cancellationToken = default);
     Task<List<Student>> GetAllAsync(CancellationToken cancellationToken = default);

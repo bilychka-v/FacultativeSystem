@@ -1,26 +1,36 @@
 using FacultativeSystem.Application.Abstractions;
+using FacultativeSystem.Application.Models;
 using FacultativeSystem.Domain.Entities;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 namespace FacultativeSystem.Infrastructure.Repositories;
 
 public class TeacherRepository(DataAccess context) : ITeacherRepository
 {
-    public async Task CreateAsync(TeacherEntity teacherEntity, CancellationToken cancellationToken = default)
+    public async Task CreateAsync(Teacher teacher, CancellationToken cancellationToken = default)
     {
+        var teacherEntity = teacher.Adapt<TeacherEntity>();
         await context.Teachers.AddAsync(teacherEntity, cancellationToken);
     }
     
-    public async Task<List<TeacherEntity>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<List<Teacher>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        return await context.Teachers.ToListAsync(cancellationToken: cancellationToken);
+        var teachersEntities = await context.Teachers
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+        
+        var teachers = teachersEntities.Adapt<List<Teacher>>();
+
+        return teachers;
     }
 
-    public async Task<TeacherEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Teacher> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var teacher = await context.Teachers.FindAsync(id, cancellationToken);
-        if(teacher is null) throw new Exception("Teacher not found");
+        var teacherEntity = await context.Teachers.FindAsync(id, cancellationToken);
+        if(teacherEntity is null) throw new Exception("Teacher not found");
+        
+        var teacher = teacherEntity.Adapt<Teacher>();
         return teacher;
     }
-    
 }

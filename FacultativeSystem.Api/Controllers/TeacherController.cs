@@ -1,4 +1,4 @@
-using FacultativeSystem.Api.Models;
+using FacultativeSystem.Application.Models;
 using FacultativeSystem.Domain.Entities;
 using FacultativeSystem.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +11,7 @@ public class TeacherController(DataAccess context) : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateTeacher(Teacher teacher)
     {
-        var teacherEntity = new TeacherEntity{Id = teacher.Id, Name = teacher.Name};
+        var teacherEntity = new TeacherEntity{Id = teacher.Id, UserName = teacher.UserName};
         context.Teachers.Add(teacherEntity);
         
         await context.SaveChangesAsync();

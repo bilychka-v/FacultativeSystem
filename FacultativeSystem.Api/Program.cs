@@ -1,4 +1,7 @@
+using FacultativeSystem.Application.Abstractions;
+using FacultativeSystem.Application.Services;
 using FacultativeSystem.Infrastructure;
+using FacultativeSystem.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +14,15 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<DataAccess>(options =>
     options.UseNpgsql("Host=localhost;Database=FacultativeSystemBd;Username=postgres;Password=123456"));
+
+builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+
+builder.Services.AddScoped<ITeacherService, TeacherService>();
+builder.Services.AddScoped<ITeacherRepository, TeacherRepository>();
+
+builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 
 var app = builder.Build();
 

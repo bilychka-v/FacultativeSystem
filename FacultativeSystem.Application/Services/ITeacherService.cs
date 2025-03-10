@@ -1,11 +1,11 @@
 using FacultativeSystem.Application.Models;
-using FacultativeSystem.Domain.Entities;
 
-namespace FacultativeSystem.Application.Abstractions;
+namespace FacultativeSystem.Application.Services;
 
-public interface ITeacherRepository
+public interface ITeacherService
 {
     Task CreateAsync(Teacher teacher, CancellationToken cancellationToken = default);
     Task<List<Teacher>> GetAllAsync(CancellationToken cancellationToken = default);
+
     Task<Teacher> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 }

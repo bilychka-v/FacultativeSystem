@@ -1,4 +1,4 @@
-namespace FacultativeSystem.Api.Models;
+namespace FacultativeSystem.Application.Models;
 
 public class Course
 {
@@ -6,8 +6,7 @@ public class Course
     public DateTime StartDate { get; set; } 
     public DateTime EndDate { get; set; }
     
-    public ICollection<StudentCourseGrade> StudentCourseGrades { get; set; } = new List<StudentCourseGrade>();
-    
     public Guid TeacherId { get; set; }
-    
+    public List<Student>? Students { get; set; } = [];
+
 }

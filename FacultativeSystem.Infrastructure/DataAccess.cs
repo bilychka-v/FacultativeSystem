@@ -10,5 +10,5 @@ public class DataAccess : DbContext
     public DbSet<StudentEntity> Students { get; set; }
     public DbSet<TeacherEntity> Teachers { get; set; }
     public DbSet<CourseEntity> Courses { get; set; }
-    public DbSet<StudentCourseGradeEntity> StudentCourseGrades { get; set; }
+    public DbSet<FeedbackGradeEntity> FeedbackGradeEntities { get; set; }
 }

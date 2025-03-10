@@ -1,26 +1,37 @@
 using FacultativeSystem.Application.Abstractions;
+using FacultativeSystem.Application.Models;
 using FacultativeSystem.Domain.Entities;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 namespace FacultativeSystem.Infrastructure.Repositories;
 
 public class StudentRepository(DataAccess context) : IStudentRepository
 {
-    public async Task CreateAsync(StudentEntity studentEntity, CancellationToken cancellationToken = default)
+    public async Task CreateAsync(Student student, CancellationToken cancellationToken = default)
     {
+        var studentEntity = student.Adapt<StudentEntity>();
         await context.Students.AddAsync(studentEntity, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<List<StudentEntity>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<List<Student>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        return await context.Students.ToListAsync(cancellationToken);
+        var studentEntites = await context.Students
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+
+        var students = studentEntites.Adapt<List<Student>>();
+        return students;
     }
 
-    public async Task<StudentEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Student> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-         var student = await context.Students.FindAsync( id, cancellationToken);
-         if(student is null) throw new Exception("Student not found");
+         var studentEntity = await context.Students.FindAsync( id, cancellationToken);
+         if(studentEntity is null) throw new Exception("Student not found");
+         
+         var student = studentEntity.Adapt<Student>();
+         
          return student;
     }
 }

@@ -1,7 +1,6 @@
-using FacultativeSystem.Api.Models;
+using FacultativeSystem.Application.Models;
 using FacultativeSystem.Domain.Entities;
 using FacultativeSystem.Infrastructure;
-using Mapster;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FacultativeSystem.Api.Controllers;
@@ -20,8 +19,8 @@ public class CourseController(DataAccess context) : ControllerBase
                 Name = course.Name,
                 StartDate = course.StartDate,
                 EndDate = course.EndDate,
-                StudentCourseGradeEntities = course.StudentCourseGrades
-                    .Adapt<ICollection<StudentCourseGradeEntity>>(),
+                // FeedbackGradeEntities = course.FeedBackGrades
+                //     .Adapt<ICollection<FeedbackGradeEntity>>(),
                 TeacherId = course.TeacherId,
             };
             context.Courses.Add(courseEntity);
