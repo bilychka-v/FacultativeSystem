@@ -4,5 +4,8 @@ public class TeacherEntity
 {
     public Guid Id { get; set; }
     public string UserName { get; set; } = String.Empty;
-    public CourseEntity? CourseEntity { get; set; }
+    
+    // list of courses
+    public ICollection<CourseEntity>? CourseEntity { get; set; } = new List<CourseEntity>();
+
 }

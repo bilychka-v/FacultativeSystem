@@ -33,4 +33,22 @@ public class TeacherRepository(DataAccess context) : ITeacherRepository
         var teacher = teacherEntity.Adapt<Teacher>();
         return teacher;
     }
+
+    public async Task CreateTeacherAsync(Teacher teacher, Guid courseId, CancellationToken cancellationToken = default)
+    {
+        var courseEntity = await context.Courses
+            .FirstOrDefaultAsync(c => c.Id == courseId, cancellationToken);
+
+        if (courseEntity is null) throw new Exception("Course not found");
+
+        var teacherEntity = teacher.Adapt<TeacherEntity>();
+        
+        courseEntity.TeacherId = teacherEntity.Id;
+        
+        context.Teachers.Add(teacherEntity);
+
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+
 }

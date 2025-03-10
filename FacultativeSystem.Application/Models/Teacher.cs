@@ -4,5 +4,5 @@ public class Teacher
 {
     public Guid Id { get; set; }
     public string UserName { get; set; } = String.Empty;
-    public Guid? CourseId { get; set; }
+    public List<Course> Courses { get; set; } = [];
 }
