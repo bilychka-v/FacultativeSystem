@@ -1,6 +1,5 @@
 using FacultativeSystem.Application.Abstractions;
 using FacultativeSystem.Application.Models;
-using FacultativeSystem.Domain.Entities;
 
 namespace FacultativeSystem.Application.Services;
 

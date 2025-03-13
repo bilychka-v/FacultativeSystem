@@ -1,6 +1,6 @@
 using FacultativeSystem.Application.Models;
 
-namespace FacultativeSystem.Application.Services;
+namespace FacultativeSystem.Application.Abstractions;
 
 public interface IStudentService
 {

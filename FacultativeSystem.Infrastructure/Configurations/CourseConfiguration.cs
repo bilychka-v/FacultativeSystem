@@ -12,7 +12,7 @@ public class CourseConfiguration : IEntityTypeConfiguration<CourseEntity>
         builder.Property(x => x.Name).IsRequired();
         builder.Property(x=>x.StartDate).IsRequired();
         builder.Property(x=>x.EndDate).IsRequired();
-        builder.Property(x => x.TeacherId).IsRequired();
+        // builder.Property(x => x.TeacherId).IsRequired();
         
     }
 }

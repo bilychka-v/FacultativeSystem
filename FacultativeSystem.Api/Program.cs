@@ -12,9 +12,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<DataAccess>(options =>
-    options.UseNpgsql("Host=localhost;Database=FacultativeSystemBd;Username=postgres;Password=123456"));
-
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 

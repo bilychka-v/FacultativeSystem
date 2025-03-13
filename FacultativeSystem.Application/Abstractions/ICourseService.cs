@@ -1,7 +1,6 @@
 using FacultativeSystem.Application.Models;
-using FacultativeSystem.Domain.Entities;
 
-namespace FacultativeSystem.Application.Services;
+namespace FacultativeSystem.Application.Abstractions;
 
 public interface ICourseService
 {
