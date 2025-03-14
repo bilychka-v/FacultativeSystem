@@ -1,6 +1,9 @@
+using FacultativeSystem.Api.Contracts;
+using FacultativeSystem.Application.Abstractions;
 using FacultativeSystem.Application.Models;
 using FacultativeSystem.Domain.Entities;
 using FacultativeSystem.Infrastructure;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FacultativeSystem.Api.Controllers;
@@ -9,23 +12,19 @@ namespace FacultativeSystem.Api.Controllers;
 [ApiController]
 [Route("Course")]
 
-public class CourseController(DataAccess context) : ControllerBase
+public class CourseController(ICourseService courseService) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> CreateCourse([FromBody] Course course)
+    public async Task<ActionResult> CreateCourse([FromBody] CourseRequest courseRequest)
     {
-            var courseEntity = new CourseEntity
-            {
-                Name = course.Name,
-                StartDate = course.StartDate,
-                EndDate = course.EndDate,
-                // FeedbackGradeEntities = course.FeedBackGrades
-                //     .Adapt<ICollection<FeedbackGradeEntity>>(),
-                TeacherId = course.TeacherId,
-            };
-            context.Courses.Add(courseEntity);
-            await context.SaveChangesAsync();
-
-        return Ok(courseEntity);
+        var course = new Course
+        {
+            Id = Guid.NewGuid(),
+            Name = courseRequest.Name,
+            StartDate = courseRequest.StartDate,
+            EndDate = courseRequest.EndDate
+        };
+        await courseService.CreateAsync(course);
+        return Ok();
     }
 }
