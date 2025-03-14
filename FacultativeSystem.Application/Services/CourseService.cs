@@ -25,6 +25,10 @@ public class CourseService(ICourseRepository courseRepository): ICourseService
         return await courseRepository.GetByIdAsync(id, cancellationToken);
     }
 
+    public async Task<Guid> UpdateAsync(Guid id, Guid idTeacher, CancellationToken cancellationToken = default)
+    {
+        return await courseRepository.UpdateAsync(id, idTeacher, cancellationToken);
+    }
     public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await courseRepository.DeleteAsync(id, cancellationToken);

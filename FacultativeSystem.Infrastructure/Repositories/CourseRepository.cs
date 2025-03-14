@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using FacultativeSystem.Application.Abstractions;
 using FacultativeSystem.Application.Models;
 using FacultativeSystem.Domain.Entities;
@@ -42,6 +41,16 @@ public class CourseRepository(DataAccess context) : ICourseRepository
         
         var course = courseEntity.Adapt<Course>();
         return course;
+    }
+
+    public async Task<Guid> UpdateAsync(Guid id, Guid idTeacher, CancellationToken cancellationToken = default)
+    {
+        var courseEntity = await context.Courses.FindAsync(id, cancellationToken);
+        if(courseEntity is null) throw new Exception("Course not found");
+
+        courseEntity.TeacherId = idTeacher;
+        await context.SaveChangesAsync(cancellationToken);
+        return courseEntity.Id;
     }
 
     public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)

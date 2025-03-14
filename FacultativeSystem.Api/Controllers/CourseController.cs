@@ -34,9 +34,10 @@ public class CourseController(ICourseService courseService) : ControllerBase
         return Ok(response);
     }
 
-    // [HttpPost("{id:guid}/AddTeacher")]
-    // public async Task<ActionResult> AddTeacherToCourse([FromBody] TeacherRequest teacherRequest, Course course)
-    // {
-    //     
-    // }
+    [HttpPut("/AddTeacher")]
+    public async Task<ActionResult<Guid>> AddTeacherToCourse(Guid id, [FromBody] CourseRequest courseRequest)
+    {
+        var courseId = await courseService.UpdateAsync(id, courseRequest.Id);
+        return Ok(courseId);
+    }
 }
