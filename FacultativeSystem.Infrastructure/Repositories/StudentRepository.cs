@@ -34,4 +34,15 @@ public class StudentRepository(DataAccess context) : IStudentRepository
          
          return student;
     }
+
+    public async Task<Guid> UpdateAsync(Guid id, string name, CancellationToken cancellationToken = default)
+    {
+        var studentEntity = await context.Students.FindAsync( id, cancellationToken);
+        if(studentEntity is null) throw new Exception("Student not found");
+
+        studentEntity.UserName = name;
+        await context.SaveChangesAsync(cancellationToken);
+        
+        return studentEntity.Id;
+    }
 }

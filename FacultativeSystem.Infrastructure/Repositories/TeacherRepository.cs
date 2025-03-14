@@ -12,6 +12,7 @@ public class TeacherRepository(DataAccess context) : ITeacherRepository
     {
         var teacherEntity = teacher.Adapt<TeacherEntity>();
         await context.Teachers.AddAsync(teacherEntity, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
     
     public async Task<List<Teacher>> GetAllAsync(CancellationToken cancellationToken = default)
@@ -50,5 +51,15 @@ public class TeacherRepository(DataAccess context) : ITeacherRepository
         await context.SaveChangesAsync(cancellationToken);
     }
 
-
+    public async Task<Guid> UpdateAsync(Guid id, string userName, List<Course>? listCourseNames, CancellationToken cancellationToken = default)
+    {
+        var teacherEntity = await context.Teachers.FindAsync(id, cancellationToken);
+        if(teacherEntity is null) throw new Exception("Teacher not found");
+        
+        teacherEntity.UserName = userName;
+        teacherEntity.CourseNames = listCourseNames.Adapt<List<CourseEntity>>();
+        
+        await context.SaveChangesAsync(cancellationToken);  
+        return teacherEntity.Id;
+    }
 }

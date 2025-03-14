@@ -8,4 +8,7 @@ public interface ITeacherService
     Task<List<Teacher>> GetAllAsync(CancellationToken cancellationToken = default);
 
     Task<Teacher> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+
+    Task<Guid> UpdateAsync(Guid id, string userName, List<Course>? listCourseNames,
+        CancellationToken cancellationToken = default);
 }

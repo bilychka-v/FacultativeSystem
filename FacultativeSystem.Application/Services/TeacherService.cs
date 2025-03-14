@@ -20,4 +20,10 @@ public class TeacherService(ITeacherRepository teacherRepository):ITeacherServic
     {
         return await teacherRepository.GetByIdAsync(id, cancellationToken);
     }
+
+    public async Task<Guid> UpdateAsync(Guid id, string userName, List<Course>? listCourseNames,
+        CancellationToken cancellationToken = default)
+    {
+        return await teacherRepository.UpdateAsync(id, userName, listCourseNames, cancellationToken);
+    }
 }

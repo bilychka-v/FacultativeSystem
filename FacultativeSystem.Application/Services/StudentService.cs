@@ -19,4 +19,9 @@ public class StudentService(IStudentRepository studentRepository) : IStudentServ
     {
         return await studentRepository.GetByIdAsync(id, cancellationToken);
     }
+
+    public async Task<Guid> UpdateAsync(Guid id, string name, CancellationToken cancellationToken = default)
+    {
+        return await studentRepository.UpdateAsync(id, name, cancellationToken);
+    }
 }

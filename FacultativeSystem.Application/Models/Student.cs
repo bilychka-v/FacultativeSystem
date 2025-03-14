@@ -8,5 +8,5 @@ public class Student
 
     // public ICollection<Teacher> Teachers { get; set; } = new List<Teacher>();
     public List<FeedbackGrade>?  StudentCourseGrades { get; set; } = [];
-    public List<Course> Courses { get; set; } = [];
+    public List<Course>? Courses { get; set; } = [];
 }
