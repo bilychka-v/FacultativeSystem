@@ -9,7 +9,7 @@ public class CourseEntity
     public DateTime StartDate { get; set; } 
     public DateTime EndDate { get; set; }
     
-    public Guid TeacherId { get; set; }
+    public Guid? TeacherId { get; set; } = Guid.Empty;
     
     //TeacherEntities 1--> CourseEntities 
     [ForeignKey(("TeacherId"))]

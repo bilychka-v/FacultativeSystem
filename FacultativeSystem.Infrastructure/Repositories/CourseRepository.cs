@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using FacultativeSystem.Application.Abstractions;
 using FacultativeSystem.Application.Models;
 using FacultativeSystem.Domain.Entities;
@@ -10,12 +11,8 @@ public class CourseRepository(DataAccess context) : ICourseRepository
 {
     public async Task CreateAsync(Course course, CancellationToken cancellationToken = default)
     {
-        if (course.Students != null)
-        {
-            var courseEntity = course.Students.Adapt<CourseEntity>();
-            await context.Courses.AddAsync(courseEntity, cancellationToken);
-        }
-
+        var courseEntity = course.Adapt<CourseEntity>();
+        await context.Courses.AddAsync(courseEntity, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
     }
 

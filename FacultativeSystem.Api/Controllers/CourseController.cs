@@ -1,8 +1,6 @@
 using FacultativeSystem.Api.Contracts;
 using FacultativeSystem.Application.Abstractions;
 using FacultativeSystem.Application.Models;
-using FacultativeSystem.Domain.Entities;
-using FacultativeSystem.Infrastructure;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,8 +12,8 @@ namespace FacultativeSystem.Api.Controllers;
 
 public class CourseController(ICourseService courseService) : ControllerBase
 {
-    [HttpPost]
-    public async Task<ActionResult> CreateCourse([FromBody] CourseRequest courseRequest)
+    [HttpPost("AddCourse")]
+    public async Task<ActionResult<Guid>> CreateCourse([FromBody] CourseRequest courseRequest)
     {
         var course = new Course
         {
@@ -25,6 +23,20 @@ public class CourseController(ICourseService courseService) : ControllerBase
             EndDate = courseRequest.EndDate
         };
         await courseService.CreateAsync(course);
-        return Ok();
+         return Ok(course.TeacherId);
     }
+
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<CourseResponse>> GetCourse(Guid id)
+    {
+        var course = await courseService.GetByIdAsync(id);
+        var response = course.Adapt<CourseResponse>();
+        return Ok(response);
+    }
+
+    // [HttpPost("{id:guid}/AddTeacher")]
+    // public async Task<ActionResult> AddTeacherToCourse([FromBody] TeacherRequest teacherRequest, Course course)
+    // {
+    //     
+    // }
 }

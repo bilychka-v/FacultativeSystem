@@ -7,7 +7,8 @@ public class Course
     public DateTime StartDate { get; set; } 
     public DateTime EndDate { get; set; }
     
-    public Guid TeacherId { get; set; }
+    public Guid? TeacherId { get; set; }
+    public string? TeacherName { get; set; } = String.Empty;
     public List<Student>? Students { get; set; } = [];
 
 }
