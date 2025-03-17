@@ -5,8 +5,8 @@ namespace FacultativeSystem.Application.Abstractions;
 
 public interface IStudentRepository
 {
-    Task CreateAsync(Student student, CancellationToken cancellationToken = default);
-    Task<List<Student>> GetAllAsync(CancellationToken cancellationToken = default);
-    Task<Student> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task CreateAsync(StudentEntity studentEntity, CancellationToken cancellationToken = default);
+    Task<List<StudentEntity>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<StudentEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
     Task<Guid> UpdateAsync(Guid id, string name, CancellationToken cancellationToken = default);
 }

@@ -5,10 +5,8 @@ namespace FacultativeSystem.Application.Abstractions;
 
 public interface ITeacherRepository
 {
-    Task CreateAsync(Teacher teacher, CancellationToken cancellationToken = default);
-    Task<List<Teacher>> GetAllAsync(CancellationToken cancellationToken = default);
-    Task<Teacher> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
-
-    Task<Guid> UpdateAsync(Guid id, string userName, List<Course>? listCourseNames,
-        CancellationToken cancellationToken = default);
+    Task CreateAsync(TeacherEntity teacherEntity, CancellationToken cancellationToken = default);
+    Task<List<TeacherEntity>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<TeacherEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    
 }

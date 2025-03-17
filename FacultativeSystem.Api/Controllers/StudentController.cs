@@ -29,7 +29,9 @@ public class StudentController:ControllerBase
 
         await _studentService.CreateAsync(student);
 
-        return Ok();
+        var response = new StudentResponse(Id: student.Id, UserName: student.UserName);
+
+        return Ok(response);
     }
 
     [HttpGet]
@@ -37,8 +39,8 @@ public class StudentController:ControllerBase
     {
         var students = await _studentService.GetAllAsync();
         var response = students.Select(student => new StudentResponse(
-            StudentId:  student.Id,
-            Username: student.UserName
+            Id:  student.Id,
+            UserName: student.UserName
         )).ToList(); 
 
         // var response = students.Adapt<List<StudentResponse>>();

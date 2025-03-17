@@ -1,6 +1,7 @@
 using FacultativeSystem.Api.Contracts;
 using FacultativeSystem.Application.Abstractions;
 using FacultativeSystem.Application.Models;
+using FacultativeSystem.Domain.Entities;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,7 +9,7 @@ namespace FacultativeSystem.Api.Controllers;
 
 
 [ApiController]
-[Route("Course")]
+[Route("api/[controller]")]
 
 public class CourseController(ICourseService courseService) : ControllerBase
 {
@@ -23,7 +24,15 @@ public class CourseController(ICourseService courseService) : ControllerBase
             EndDate = courseRequest.EndDate
         };
         await courseService.CreateAsync(course);
-         return Ok(course.TeacherId);
+
+        var response = new CourseResponse
+        (
+            Id : course.Id,
+            Name : course.Name,
+            StartDate : course.StartDate,
+            EndDate : course.EndDate
+        );
+         return Ok(response);
     }
 
     [HttpGet("{id:guid}")]

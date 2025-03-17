@@ -8,20 +8,20 @@ namespace FacultativeSystem.Infrastructure.Repositories;
 
 public class FeedbackGradeRepository(DataAccess context) : IFeedbackGradeRepository
 {
-    public async Task CreateAsync(FeedbackGrade feedbackGrade, CancellationToken cancellationToken)
+    public async Task CreateAsync(FeedbackGradeEntity feedbackGradeEntity, CancellationToken cancellationToken)
     {
-        var feedbackGradeEntity = feedbackGrade.Adapt<FeedbackGradeEntity>();
+        // var feedbackGradeEntity = feedbackGrade.Adapt<FeedbackGradeEntity>();
         await context.FeedbackGradeEntities.AddAsync(feedbackGradeEntity, cancellationToken);
     }
 
-    public async Task<List<FeedbackGrade>> GetByStudentIdAsync(Guid studentId,
+    public async Task<List<FeedbackGradeEntity>> GetByStudentIdAsync(Guid studentId,
         CancellationToken cancellationToken)
     {
         var feedbackGradeEntities = await context.FeedbackGradeEntities.FindAsync(studentId, cancellationToken);
         if(feedbackGradeEntities is null) throw new Exception("No feedback grade found");
         
-        var feedbackGrades = feedbackGradeEntities.Adapt<List<FeedbackGrade>>();
-        return feedbackGrades;
+        // var feedbackGrades = feedbackGradeEntities.Adapt<List<FeedbackGrade>>();
+        return feedbackGradeEntities.Adapt<List<FeedbackGradeEntity>>();
     }
     
 

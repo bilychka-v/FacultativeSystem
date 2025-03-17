@@ -8,31 +8,31 @@ namespace FacultativeSystem.Infrastructure.Repositories;
 
 public class StudentRepository(DataAccess context) : IStudentRepository
 {
-    public async Task CreateAsync(Student student, CancellationToken cancellationToken = default)
+    public async Task CreateAsync(StudentEntity studentEntity, CancellationToken cancellationToken = default)
     {
-        var studentEntity = student.Adapt<StudentEntity>();
+        // var studentEntity = student.Adapt<StudentEntity>();
         await context.Students.AddAsync(studentEntity, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<List<Student>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<List<StudentEntity>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         var studentEntites = await context.Students
             .AsNoTracking()
             .ToListAsync(cancellationToken);
 
-        var students = studentEntites.Adapt<List<Student>>();
-        return students;
+        // var students = studentEntites.Adapt<List<Student>>();
+        return studentEntites;
     }
 
-    public async Task<Student> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<StudentEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
          var studentEntity = await context.Students.FindAsync( id, cancellationToken);
          if(studentEntity is null) throw new Exception("Student not found");
          
-         var student = studentEntity.Adapt<Student>();
+         // var student = studentEntity.Adapt<Student>();
          
-         return student;
+         return studentEntity;
     }
 
     public async Task<Guid> UpdateAsync(Guid id, string name, CancellationToken cancellationToken = default)
@@ -42,7 +42,7 @@ public class StudentRepository(DataAccess context) : IStudentRepository
 
         studentEntity.UserName = name;
         await context.SaveChangesAsync(cancellationToken);
-        
         return studentEntity.Id;
+        
     }
 }

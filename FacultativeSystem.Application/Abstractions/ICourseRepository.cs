@@ -5,10 +5,10 @@ namespace FacultativeSystem.Application.Abstractions;
 
 public interface ICourseRepository
 {
-    Task CreateAsync(Course course, CancellationToken cancellationToken = default);
-    Task<List<Course>> GetAllCoursesAsync(CancellationToken cancellationToken = default);
-    Task<List<Student>> GetAllStudentsAsync(CancellationToken cancellationToken = default);
-    Task<Course> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task CreateAsync(CourseEntity courseEntity, CancellationToken cancellationToken = default);
+    Task<List<CourseEntity>> GetAllCoursesAsync(CancellationToken cancellationToken = default);
+    Task<List<StudentEntity>> GetAllStudentsAsync(CancellationToken cancellationToken = default);
+    Task<CourseEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
     Task<Guid> UpdateAsync(Guid id, Guid idTeacher, CancellationToken cancellationToken = default);
     Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
 }

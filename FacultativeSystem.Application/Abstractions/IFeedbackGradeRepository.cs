@@ -5,8 +5,8 @@ namespace FacultativeSystem.Application.Abstractions;
 
 public interface IFeedbackGradeRepository
 {
-    Task CreateAsync(FeedbackGrade feedbackGrade, CancellationToken cancellationToken);
-    Task<List<FeedbackGrade>> GetByStudentIdAsync(Guid studentId, CancellationToken cancellationToken);
+    Task CreateAsync(FeedbackGradeEntity feedbackGrade, CancellationToken cancellationToken);
+    Task<List<FeedbackGradeEntity>> GetByStudentIdAsync(Guid studentId, CancellationToken cancellationToken);
 
     Task UpdateAsync(Guid id, int grade, string feedback, CancellationToken cancellationToken);
 

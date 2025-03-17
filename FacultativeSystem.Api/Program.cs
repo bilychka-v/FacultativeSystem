@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
 // Додаємо DataAccess в залежності
-builder.Services.AddScoped<DataAccess>();
+// builder.Services.AddScoped<DataAccess>();
 
 // Конфігурація для роботи з базою даних (підключення через Npgsql)
 builder.Services.AddDbContext<DataAccess>(options =>

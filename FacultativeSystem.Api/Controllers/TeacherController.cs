@@ -19,7 +19,10 @@ public class TeacherController(ITeacherService teacherService) : ControllerBase
             UserName = request.UserName
         };
         await teacherService.CreateAsync(teacher);
-        return Ok();
+        
+        var response = new TeacherResponse(teacher.Id, teacher.UserName, new List<string>());
+        
+        return Ok(response);
     }
 
     [HttpGet]
@@ -28,8 +31,8 @@ public class TeacherController(ITeacherService teacherService) : ControllerBase
         var teachers = await teacherService.GetAllAsync();
 
         var response = teachers.Select(t => new TeacherResponse(
-            TeacherId: t.Id,
-            TeacherName: t.UserName,
+            Id: t.Id,
+            UserName: t.UserName,
             CourseName: t.Courses?.Select(c=>c.Name).ToList() ?? new List<string>()))
             .ToList();
         return Ok(response);

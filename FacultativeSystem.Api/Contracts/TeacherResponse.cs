@@ -1,7 +1,7 @@
 namespace FacultativeSystem.Api.Contracts;
 
 public record TeacherResponse(
-    Guid TeacherId,
-    string TeacherName,
+    Guid Id,
+    string UserName,
     List<string>? CourseName
     );

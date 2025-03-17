@@ -8,58 +8,31 @@ namespace FacultativeSystem.Infrastructure.Repositories;
 
 public class TeacherRepository(DataAccess context) : ITeacherRepository
 {
-    public async Task CreateAsync(Teacher teacher, CancellationToken cancellationToken = default)
+    public async Task CreateAsync(TeacherEntity teacherEntity, CancellationToken cancellationToken = default)
     {
-        var teacherEntity = teacher.Adapt<TeacherEntity>();
+        // var teacherEntity = teacher.Adapt<TeacherEntity>();
         await context.Teachers.AddAsync(teacherEntity, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
     }
     
-    public async Task<List<Teacher>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<List<TeacherEntity>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         var teachersEntities = await context.Teachers
             .AsNoTracking()
             .ToListAsync(cancellationToken);
         
-        var teachers = teachersEntities.Adapt<List<Teacher>>();
+        // var teachers = teachersEntities.Adapt<List<Teacher>>();
 
-        return teachers;
+        return teachersEntities.Adapt<List<TeacherEntity>>();
     }
 
-    public async Task<Teacher> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<TeacherEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var teacherEntity = await context.Teachers.FindAsync(id, cancellationToken);
         if(teacherEntity is null) throw new Exception("Teacher not found");
         
-        var teacher = teacherEntity.Adapt<Teacher>();
-        return teacher;
+        // var teacher = teacherEntity.Adapt<Teacher>();
+        return teacherEntity;
     }
-
-    public async Task CreateTeacherAsync(Teacher teacher, Guid courseId, CancellationToken cancellationToken = default)
-    {
-        var courseEntity = await context.Courses
-            .FirstOrDefaultAsync(c => c.Id == courseId, cancellationToken);
-
-        if (courseEntity is null) throw new Exception("Course not found");
-
-        var teacherEntity = teacher.Adapt<TeacherEntity>();
-        
-        courseEntity.TeacherId = teacherEntity.Id;
-        
-        context.Teachers.Add(teacherEntity);
-
-        await context.SaveChangesAsync(cancellationToken);
-    }
-
-    public async Task<Guid> UpdateAsync(Guid id, string userName, List<Course>? listCourseNames, CancellationToken cancellationToken = default)
-    {
-        var teacherEntity = await context.Teachers.FindAsync(id, cancellationToken);
-        if(teacherEntity is null) throw new Exception("Teacher not found");
-        
-        teacherEntity.UserName = userName;
-        teacherEntity.CourseNames = listCourseNames.Adapt<List<CourseEntity>>();
-        
-        await context.SaveChangesAsync(cancellationToken);  
-        return teacherEntity.Id;
-    }
+    
 }

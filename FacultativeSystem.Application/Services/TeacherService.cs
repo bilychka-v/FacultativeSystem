@@ -1,5 +1,7 @@
 using FacultativeSystem.Application.Abstractions;
 using FacultativeSystem.Application.Models;
+using FacultativeSystem.Domain.Entities;
+using Mapster;
 using MapsterMapper;
 
 namespace FacultativeSystem.Application.Services;
@@ -8,22 +10,20 @@ public class TeacherService(ITeacherRepository teacherRepository):ITeacherServic
 {
     public async Task CreateAsync(Teacher teacher, CancellationToken cancellationToken = default)
     {
-        await teacherRepository.CreateAsync(teacher, cancellationToken);
+        var teacherEntity = teacher.Adapt<TeacherEntity>();
+        await teacherRepository.CreateAsync(teacherEntity, cancellationToken);
     }
 
     public async Task<List<Teacher>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        return await teacherRepository.GetAllAsync(cancellationToken);
+        var teachersEntities = await teacherRepository.GetAllAsync(cancellationToken);
+        return teachersEntities.Adapt<List<Teacher>>(); 
     }
 
     public async Task<Teacher> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return await teacherRepository.GetByIdAsync(id, cancellationToken);
+        var teacherEntity = await teacherRepository.GetByIdAsync(id, cancellationToken);
+        return teacherEntity.Adapt<Teacher>();
     }
-
-    public async Task<Guid> UpdateAsync(Guid id, string userName, List<Course>? listCourseNames,
-        CancellationToken cancellationToken = default)
-    {
-        return await teacherRepository.UpdateAsync(id, userName, listCourseNames, cancellationToken);
-    }
+    
 }
