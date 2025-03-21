@@ -25,7 +25,7 @@ public class CourseService(ICourseRepository courseRepository): ICourseService
         return studentEntities.Adapt<List<Student>>();
     }
 
-    public async Task<Course> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Course?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var courseEntity = await courseRepository.GetByIdAsync(id, cancellationToken);
         return  courseEntity.Adapt<Course>();

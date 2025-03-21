@@ -1,8 +1,5 @@
-//переробити без моделей бізнес-логіки, використовувати лише domain models
 using FacultativeSystem.Application.Abstractions;
-using FacultativeSystem.Application.Models;
 using FacultativeSystem.Domain.Entities;
-using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 namespace FacultativeSystem.Infrastructure.Repositories;
@@ -11,7 +8,6 @@ public class CourseRepository(DataAccess context) : ICourseRepository
 {
     public async Task CreateAsync(CourseEntity courseEntity, CancellationToken cancellationToken = default)
     {
-        // var courseEntity = course.Adapt<CourseEntity>();
         await context.Courses.AddAsync(courseEntity, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
     }
@@ -30,16 +26,14 @@ public class CourseRepository(DataAccess context) : ICourseRepository
             .AsNoTracking()
             .ToListAsync(cancellationToken);
         
-        // var students = studentEntities.Adapt<List<Student>>();
         return studentEntities;
     }
 
-    public async Task<CourseEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<CourseEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var courseEntity = await context.Courses.FindAsync(id, cancellationToken);
         if(courseEntity is null) throw new Exception("Course not found");
         
-        // var course = courseEntity.Adapt<Course>();
         return courseEntity;
     }
 
