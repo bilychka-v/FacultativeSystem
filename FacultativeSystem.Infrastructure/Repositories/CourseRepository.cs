@@ -16,12 +16,11 @@ public class CourseRepository(DataAccess context) : ICourseRepository
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<List<CourseEntity>> GetAllCoursesAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<CourseEntity>> GetAllCoursesAsync(CancellationToken cancellationToken = default)
     {
         var coursesEntities = await context.Courses
             .AsNoTracking()
             .ToListAsync(cancellationToken);
-        // var courses = coursesEntities.Adapt<List<Course>>();
         return coursesEntities;
     }
 

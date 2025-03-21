@@ -7,7 +7,7 @@ namespace FacultativeSystem.Application.Services;
 
 public class CourseService(ICourseRepository courseRepository): ICourseService
 {
-    public async Task<List<Course>> GetAllCoursesAsync()
+    public async Task<IEnumerable<Course>> GetAllCoursesAsync()
     {   
         var coursesEntities = await courseRepository.GetAllCoursesAsync();
         return coursesEntities.Adapt<List<Course>>();
