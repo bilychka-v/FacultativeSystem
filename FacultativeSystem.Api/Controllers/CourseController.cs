@@ -46,8 +46,7 @@ public class CourseController(ICourseService courseService) : ControllerBase
             (
                 Id: c.Id, 
                 Name: c.Name,
-                StartDate:
-                c.StartDate,
+                StartDate: c.StartDate,
                 EndDate: c.EndDate
             )
         );
@@ -55,12 +54,23 @@ public class CourseController(ICourseService courseService) : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("{id:guid}")]
-    public async Task<ActionResult<CourseResponse>> GetCourse(Guid id)
+    [HttpGet]
+    [Route("{id:Guid}")]
+    public async Task<ActionResult<CourseResponse>> GetCourse([FromRoute] Guid id)
     {
         var course = await courseService.GetByIdAsync(id);
-        // var response = course.Adapt<CourseResponse>();
-        return Ok(course);
+        if (course is null)
+            return NotFound();
+        
+        var response = new CourseResponse
+        (
+            Id:course.Id, 
+            Name:course.Name, 
+            StartDate:course.StartDate, 
+            EndDate:course.EndDate
+        );
+        
+        return Ok(response);
     }
 
     // [HttpPut("/AddTeacher")]
