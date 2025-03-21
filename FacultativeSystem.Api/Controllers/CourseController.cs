@@ -13,15 +13,15 @@ namespace FacultativeSystem.Api.Controllers;
 
 public class CourseController(ICourseService courseService) : ControllerBase
 {
-    [HttpPost("AddCourse")]
+    [HttpPost]
     public async Task<ActionResult<Guid>> CreateCourse([FromBody] CourseRequest courseRequest)
     {
         var course = new Course
         {
             Id = Guid.NewGuid(),
             Name = courseRequest.Name,
-            StartDate = courseRequest.StartDate,
-            EndDate = courseRequest.EndDate
+            StartDate = courseRequest.StartDate.ToUniversalTime(),
+            EndDate = courseRequest.EndDate.ToUniversalTime()
         };
         await courseService.CreateAsync(course);
 
@@ -35,18 +35,38 @@ public class CourseController(ICourseService courseService) : ControllerBase
          return Ok(response);
     }
 
+    [HttpGet]
+    public async Task<ActionResult<List<CourseResponse>>> GetCourses()
+    {
+        var courses = await courseService.GetAllCoursesAsync();
+        
+        var response = courses.Select
+        (
+            c=> new CourseResponse
+            (
+                Id: c.Id, 
+                Name: c.Name,
+                StartDate:
+                c.StartDate,
+                EndDate: c.EndDate
+            )
+        );
+        
+        return Ok(response);
+    }
+
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<CourseResponse>> GetCourse(Guid id)
     {
         var course = await courseService.GetByIdAsync(id);
-        var response = course.Adapt<CourseResponse>();
-        return Ok(response);
+        // var response = course.Adapt<CourseResponse>();
+        return Ok(course);
     }
 
-    [HttpPut("/AddTeacher")]
-    public async Task<ActionResult<Guid>> AddTeacherToCourse(Guid id, [FromBody] CourseRequest courseRequest)
-    {
-        var courseId = await courseService.UpdateAsync(id, courseRequest.Id);
-        return Ok(courseId);
-    }
+    // [HttpPut("/AddTeacher")]
+    // public async Task<ActionResult<Guid>> AddTeacherToCourse(Guid id, [FromBody] CourseRequest courseRequest)
+    // {
+    //     var courseId = await courseService.UpdateAsync(id, courseRequest.Id);
+    //     return Ok(courseId);
+    // }
 }
