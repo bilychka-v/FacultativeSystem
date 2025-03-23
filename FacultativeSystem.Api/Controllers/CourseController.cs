@@ -36,20 +36,19 @@ public class CourseController(ICourseService courseService) : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<CourseResponse>>> GetCourses()
+    public async Task<ActionResult<List<CourseListItemDto>>> GetCourses()
     {
         var courses = await courseService.GetAllCoursesAsync();
         
         var response = courses.Select
         (
-            c=> new CourseResponse
+            c=> new CourseListItemDto
             (
                 Id: c.Id, 
                 Name: c.Name,
-                StartDate: c.StartDate,
-                EndDate: c.EndDate
+                IsActive: c.EndDate > DateTime.Now
             )
-        );
+        ).ToList();
         
         return Ok(response);
     }
