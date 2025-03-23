@@ -37,23 +37,35 @@ public class CourseRepository(DataAccess context) : ICourseRepository
         return courseEntity;
     }
 
-    public async Task<Guid> UpdateAsync(Guid id, Guid idTeacher, CancellationToken cancellationToken = default)
-    {
-        var courseEntity = await context.Courses.FindAsync(id, cancellationToken);
-        if(courseEntity is null) throw new Exception("Course not found");
+    // public async Task<Guid> UpdateAsync(Guid id, Guid idTeacher, CancellationToken cancellationToken = default)
+    // {
+    //     var courseEntity = await context.Courses.FindAsync(id, cancellationToken);
+    //     if(courseEntity is null) throw new Exception("Course not found");
+    //
+    //     courseEntity.TeacherId = idTeacher;
+    //     await context.SaveChangesAsync(cancellationToken);
+    //     return courseEntity.Id;
+    // }
 
-        courseEntity.TeacherId = idTeacher;
+    public async Task<CourseEntity?> UpdateAsync(CourseEntity courseEntity,
+        CancellationToken cancellationToken = default)
+    {
+        var course = await GetByIdAsync(courseEntity.Id, cancellationToken);
+        course.Name = courseEntity.Name;
+        course.StartDate = courseEntity.StartDate;
+        course.EndDate = courseEntity.EndDate;
+        
         await context.SaveChangesAsync(cancellationToken);
-        return courseEntity.Id;
+        return course;
+        
     }
 
-    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<CourseEntity?> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var course = await context.Courses.FindAsync(id, cancellationToken);
-        if(course is null) throw new Exception("Course not found");
-        
-        context.Courses.Remove(course);
-        await context.SaveChangesAsync(cancellationToken);
+        var course = await GetByIdAsync(id, cancellationToken);
 
+        if (course != null) context.Courses.Remove(course);
+        await context.SaveChangesAsync(cancellationToken);
+        return course;
     }
 }

@@ -31,12 +31,15 @@ public class CourseService(ICourseRepository courseRepository): ICourseService
         return  courseEntity.Adapt<Course>();
     }
 
-    public async Task<Guid> UpdateAsync(Guid id, Guid idTeacher, CancellationToken cancellationToken = default)
+    public async Task<Course?> UpdateAsync(Course course, CancellationToken cancellationToken = default)
     {
-        return await courseRepository.UpdateAsync(id, idTeacher, cancellationToken);
+        var courseEntity = course.Adapt<CourseEntity>();
+        await courseRepository.UpdateAsync(courseEntity, cancellationToken);
+        return courseEntity.Adapt<Course>();
     }
-    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Course?> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        await courseRepository.DeleteAsync(id, cancellationToken);
+        var courseEntity =  await courseRepository.DeleteAsync(id, cancellationToken);
+        return courseEntity.Adapt<Course>();
     }
 }

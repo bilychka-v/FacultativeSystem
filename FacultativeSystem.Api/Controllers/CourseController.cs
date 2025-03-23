@@ -1,7 +1,6 @@
 using FacultativeSystem.Api.Contracts;
 using FacultativeSystem.Application.Abstractions;
 using FacultativeSystem.Application.Models;
-using FacultativeSystem.Domain.Entities;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 
@@ -68,6 +67,34 @@ public class CourseController(ICourseService courseService) : ControllerBase
             StartDate:course.StartDate, 
             EndDate:course.EndDate
         );
+        
+        return Ok(response);
+    }
+
+    [HttpPut]
+    [Route("{id:Guid}")]
+
+    public async Task<ActionResult> EditCourse([FromRoute] Guid id, [FromBody] CourseRequest courseRequest)
+    {
+        var course = new Course()
+        {
+            Id = id,
+            Name = courseRequest.Name,
+            StartDate = courseRequest.StartDate.ToUniversalTime(),
+            EndDate = courseRequest.EndDate.ToUniversalTime()
+        };
+        
+        var courseUpdated = await courseService.UpdateAsync(course);
+        var response = courseUpdated.Adapt<CourseResponse>();
+        return Ok(response);
+    }
+
+    [HttpDelete]
+    [Route("{id:Guid}")]
+    public async Task<ActionResult> DeleteCourse([FromRoute] Guid id)
+    {
+        var course =  await courseService.DeleteAsync(id);
+        var response = course.Adapt<CourseResponse>();
         
         return Ok(response);
     }
