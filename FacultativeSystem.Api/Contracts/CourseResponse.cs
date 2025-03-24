@@ -4,5 +4,6 @@ public record CourseResponse(
     Guid Id,
     string Name,
     DateTime StartDate,
-    DateTime EndDate
+    DateTime EndDate,
+    Guid TeacherId
     );

@@ -2,44 +2,46 @@ using FacultativeSystem.Application.Abstractions;
 using FacultativeSystem.Application.Models;
 using FacultativeSystem.Domain.Entities;
 using Mapster;
+using MapsterMapper;
 
 namespace FacultativeSystem.Application.Services;
 
-public class CourseService(ICourseRepository courseRepository): ICourseService
+public class CourseService(ICourseRepository courseRepository, IMapper mapper): ICourseService
 {
-    public async Task<IEnumerable<Course>> GetAllCoursesAsync()
+    public async Task<List<Course>> GetAllCoursesAsync()
     {   
         var coursesEntities = await courseRepository.GetAllCoursesAsync();
-        return coursesEntities.Adapt<List<Course>>();
+        return mapper.Map<List<Course>>(coursesEntities);
     }
 
     public async Task CreateAsync(Course course, CancellationToken cancellationToken = default)
     {
-        var courseEntity = course.Adapt<CourseEntity>();
+        var courseEntity = mapper.Map<CourseEntity>(course);
         await courseRepository.CreateAsync(courseEntity, cancellationToken);
     }
 
     public async Task<List<Student>> GetAllStudentsAsync(CancellationToken cancellationToken = default)
     {
         var studentEntities = await courseRepository.GetAllStudentsAsync(cancellationToken);
-        return studentEntities.Adapt<List<Student>>();
+        return mapper.Map<List<Student>>(studentEntities);
+        
     }
 
     public async Task<Course?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var courseEntity = await courseRepository.GetByIdAsync(id, cancellationToken);
-        return  courseEntity.Adapt<Course>();
+        return  mapper.Map<Course>(courseEntity);
     }
 
     public async Task<Course?> UpdateAsync(Course course, CancellationToken cancellationToken = default)
     {
         var courseEntity = course.Adapt<CourseEntity>();
         await courseRepository.UpdateAsync(courseEntity, cancellationToken);
-        return courseEntity.Adapt<Course>();
+        return mapper.Map<Course>(courseEntity);
     }
     public async Task<Course?> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var courseEntity =  await courseRepository.DeleteAsync(id, cancellationToken);
-        return courseEntity.Adapt<Course>();
+        return mapper.Map<Course>(courseEntity);
     }
 }

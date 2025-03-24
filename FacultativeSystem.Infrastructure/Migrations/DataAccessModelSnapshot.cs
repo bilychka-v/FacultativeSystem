@@ -116,7 +116,7 @@ namespace FacultativeSystem.Infrastructure.Migrations
             modelBuilder.Entity("FacultativeSystem.Domain.Entities.CourseEntity", b =>
                 {
                     b.HasOne("FacultativeSystem.Domain.Entities.TeacherEntity", "Teacher")
-                        .WithMany("CourseNames")
+                        .WithMany("Courses")
                         .HasForeignKey("TeacherId");
 
                     b.Navigation("Teacher");
@@ -136,7 +136,7 @@ namespace FacultativeSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("FacultativeSystem.Domain.Entities.TeacherEntity", b =>
                 {
-                    b.Navigation("CourseNames");
+                    b.Navigation("Courses");
                 });
 #pragma warning restore 612, 618
         }

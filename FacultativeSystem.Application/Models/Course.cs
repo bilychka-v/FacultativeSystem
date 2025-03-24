@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace FacultativeSystem.Application.Models;
 
 public class Course
@@ -7,8 +9,8 @@ public class Course
     public DateTime StartDate { get; set; } 
     public DateTime EndDate { get; set; }
     
-    public Guid? TeacherId { get; set; }
-    public string? TeacherName { get; set; } = String.Empty;
+    public Guid TeacherId { get; set; }
+    public Teacher Teacher { get; set; } 
     public List<Student>? Students { get; set; } = [];
 
 }

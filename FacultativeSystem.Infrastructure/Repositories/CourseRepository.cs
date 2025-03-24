@@ -12,10 +12,11 @@ public class CourseRepository(DataAccess context) : ICourseRepository
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<CourseEntity>> GetAllCoursesAsync(CancellationToken cancellationToken = default)
+    public async Task<List<CourseEntity>> GetAllCoursesAsync(CancellationToken cancellationToken = default)
     {
         var coursesEntities = await context.Courses
             .AsNoTracking()
+            .Include(c=>c.Teacher)
             .ToListAsync(cancellationToken);
         return coursesEntities;
     }
@@ -54,6 +55,7 @@ public class CourseRepository(DataAccess context) : ICourseRepository
         course.Name = courseEntity.Name;
         course.StartDate = courseEntity.StartDate;
         course.EndDate = courseEntity.EndDate;
+        course.TeacherId = courseEntity.TeacherId;
         
         await context.SaveChangesAsync(cancellationToken);
         return course;

@@ -1,5 +1,7 @@
+using FacultativeSystem.Api;
 using FacultativeSystem.Application.Abstractions;
 using FacultativeSystem.Application.Services;
+using FacultativeSystem.Domain.Repositories;
 using FacultativeSystem.Infrastructure;
 using FacultativeSystem.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +31,12 @@ builder.Services.AddScoped<ITeacherRepository, TeacherRepository>();
 
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+
+builder.Services.AddScoped<IFeedbackGradeService, FeedbackGradeService>();
+builder.Services.AddScoped<IFeedbackGradeRepository, FeedbackGradeRepository>();
+
+builder.Services.RegisterMappings();
+
 
 var app = builder.Build();
 

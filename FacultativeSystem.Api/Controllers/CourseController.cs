@@ -20,7 +20,8 @@ public class CourseController(ICourseService courseService) : ControllerBase
             Id = Guid.NewGuid(),
             Name = courseRequest.Name,
             StartDate = courseRequest.StartDate.ToUniversalTime(),
-            EndDate = courseRequest.EndDate.ToUniversalTime()
+            EndDate = courseRequest.EndDate.ToUniversalTime(),
+            TeacherId = courseRequest.TeacherId
         };
         await courseService.CreateAsync(course);
 
@@ -29,8 +30,10 @@ public class CourseController(ICourseService courseService) : ControllerBase
             Id : course.Id,
             Name : course.Name,
             StartDate : course.StartDate,
-            EndDate : course.EndDate
+            EndDate : course.EndDate,
+            TeacherId: course.TeacherId
         );
+        
          return Ok(response);
     }
 
@@ -45,7 +48,8 @@ public class CourseController(ICourseService courseService) : ControllerBase
             (
                 Id: c.Id, 
                 Name: c.Name,
-                IsActive: c.EndDate > DateTime.Now
+                IsActive: c.EndDate > DateTime.Now,
+                TeacherName: c.Teacher?.UserName
             )
         ).ToList();
         
@@ -65,7 +69,8 @@ public class CourseController(ICourseService courseService) : ControllerBase
             Id:course.Id, 
             Name:course.Name, 
             StartDate:course.StartDate, 
-            EndDate:course.EndDate
+            EndDate:course.EndDate,
+            TeacherId: course.TeacherId
         );
         
         return Ok(response);
@@ -81,7 +86,8 @@ public class CourseController(ICourseService courseService) : ControllerBase
             Id = id,
             Name = courseRequest.Name,
             StartDate = courseRequest.StartDate.ToUniversalTime(),
-            EndDate = courseRequest.EndDate.ToUniversalTime()
+            EndDate = courseRequest.EndDate.ToUniversalTime(),
+            TeacherId = courseRequest.TeacherId
         };
         
         var courseUpdated = await courseService.UpdateAsync(course);
