@@ -10,7 +10,6 @@ public class TeacherRepository(DataAccess context) : ITeacherRepository
 {
     public async Task CreateAsync(TeacherEntity teacherEntity, CancellationToken cancellationToken = default)
     {
-        // var teacherEntity = teacher.Adapt<TeacherEntity>();
         await context.Teachers.AddAsync(teacherEntity, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
     }
@@ -19,11 +18,11 @@ public class TeacherRepository(DataAccess context) : ITeacherRepository
     {
         var teachersEntities = await context.Teachers
             .AsNoTracking()
+            .Include(t => t.Courses)
             .ToListAsync(cancellationToken);
-        
-        // var teachers = teachersEntities.Adapt<List<Teacher>>();
 
-        return teachersEntities.Adapt<List<TeacherEntity>>();
+
+        return teachersEntities;
     }
 
     public async Task<TeacherEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -31,7 +30,6 @@ public class TeacherRepository(DataAccess context) : ITeacherRepository
         var teacherEntity = await context.Teachers.FindAsync(id, cancellationToken);
         if(teacherEntity is null) throw new Exception("Teacher not found");
         
-        // var teacher = teacherEntity.Adapt<Teacher>();
         return teacherEntity;
     }
     

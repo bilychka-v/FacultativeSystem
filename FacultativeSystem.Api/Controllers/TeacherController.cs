@@ -1,13 +1,12 @@
 using FacultativeSystem.Api.Contracts;
 using FacultativeSystem.Application.Abstractions;
 using FacultativeSystem.Application.Models;
-using FacultativeSystem.Domain.Entities;
-using FacultativeSystem.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FacultativeSystem.Api.Controllers;
+
 [ApiController]
-[Route("Teacher")]
+[Route("api/[controller]")]
 public class TeacherController(ITeacherService teacherService) : ControllerBase
 {
     [HttpPost]
@@ -15,13 +14,17 @@ public class TeacherController(ITeacherService teacherService) : ControllerBase
     {
         var teacher = new Teacher
         {
-            Id = Guid.NewGuid(), 
+            Id = Guid.NewGuid(),
             UserName = request.UserName
         };
         await teacherService.CreateAsync(teacher);
-        
-        var response = new TeacherResponse(teacher.Id, teacher.UserName, new List<string>());
-        
+
+        var response = new TeacherResponse
+        (
+            teacher.Id,
+            teacher.UserName,
+            new List<string>());
+
         return Ok(response);
     }
 
@@ -30,11 +33,15 @@ public class TeacherController(ITeacherService teacherService) : ControllerBase
     {
         var teachers = await teacherService.GetAllAsync();
 
-        var response = teachers.Select(t => new TeacherResponse(
+        var response = teachers.Select(t => new TeacherResponse
+        (
             Id: t.Id,
             UserName: t.UserName,
-            CourseName: t.Courses?.Select(c=>c.Name).ToList() ?? new List<string>()))
-            .ToList();
+            Courses: t.Courses.ToList()
+
+        )).ToList();
+
         return Ok(response);
+
     }
 }

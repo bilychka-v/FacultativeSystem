@@ -6,24 +6,29 @@ using MapsterMapper;
 
 namespace FacultativeSystem.Application.Services;
 
-public class TeacherService(ITeacherRepository teacherRepository):ITeacherService
+public class TeacherService(ITeacherRepository teacherRepository, IMapper mapper):ITeacherService
 {
     public async Task CreateAsync(Teacher teacher, CancellationToken cancellationToken = default)
     {
-        var teacherEntity = teacher.Adapt<TeacherEntity>();
+        var teacherEntity = mapper.Map<TeacherEntity>(teacher);
         await teacherRepository.CreateAsync(teacherEntity, cancellationToken);
     }
 
     public async Task<List<Teacher>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var teachersEntities = await teacherRepository.GetAllAsync(cancellationToken);
-        return teachersEntities.Adapt<List<Teacher>>(); 
+        var teacherEntities = await teacherRepository.GetAllAsync(cancellationToken);
+        return teacherEntities.Select(t => new Teacher
+        {
+            Id = t.Id,
+            UserName = t.UserName,
+            Courses = t.Courses?.Select(c=> c.Name).ToList() ?? []
+        }).ToList();
     }
 
     public async Task<Teacher> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var teacherEntity = await teacherRepository.GetByIdAsync(id, cancellationToken);
-        return teacherEntity.Adapt<Teacher>();
+        return mapper.Map<Teacher>(teacherEntity);
     }
     
 }
