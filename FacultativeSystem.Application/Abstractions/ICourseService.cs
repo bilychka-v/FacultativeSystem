@@ -4,7 +4,7 @@ namespace FacultativeSystem.Application.Abstractions;
 
 public interface ICourseService
 {
-    Task<IEnumerable<Course>> GetAllCoursesAsync();
+    Task<List<Course>> GetAllCoursesAsync();
     Task CreateAsync(Course course, CancellationToken cancellationToken = default);
     Task<List<Student>> GetAllStudentsAsync(CancellationToken cancellationToken = default);
     Task<Course?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
