@@ -1,43 +1,57 @@
-using FacultativeSystem.Application.Abstractions;
 using FacultativeSystem.Application.Models;
 using FacultativeSystem.Domain.Entities;
-using Mapster;
+using FacultativeSystem.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace FacultativeSystem.Infrastructure.Repositories;
 
-public class FeedbackGradeRepository(DataAccess context) : IFeedbackGradeRepository
+public class FeedbackGradeRepository : IFeedbackGradeRepository
 {
-    public async Task CreateAsync(FeedbackGradeEntity feedbackGradeEntity, CancellationToken cancellationToken)
+    private readonly DataAccess _context;
+
+    public FeedbackGradeRepository(DataAccess context)
     {
-        // var feedbackGradeEntity = feedbackGrade.Adapt<FeedbackGradeEntity>();
-        await context.FeedbackGradeEntities.AddAsync(feedbackGradeEntity, cancellationToken);
+        _context = context;
     }
 
-    public async Task<List<FeedbackGradeEntity>> GetByStudentIdAsync(Guid studentId,
-        CancellationToken cancellationToken)
+    public async Task<IEnumerable<FeedbackGradeEntity>> GetAllAsync()
     {
-        var feedbackGradeEntities = await context.FeedbackGradeEntities.FindAsync(studentId, cancellationToken);
-        if(feedbackGradeEntities is null) throw new Exception("No feedback grade found");
+        var feedBackEntities = await _context.FeedbackGradeEntities
+            .AsNoTracking()
+            .ToListAsync();
+        return feedBackEntities;
         
-        // var feedbackGrades = feedbackGradeEntities.Adapt<List<FeedbackGrade>>();
-        return feedbackGradeEntities.Adapt<List<FeedbackGradeEntity>>();
+    }
+
+    public async Task<FeedbackGradeEntity?> GetByIdAsync(Guid id)
+    {
+        return await _context.FeedbackGradeEntities.FindAsync(id);
+    }
+
+    public async Task<IEnumerable<FeedbackGradeEntity>> GetByStudentIdAsync(Guid studentId)
+    {
+        return await _context.FeedbackGradeEntities
+            .Where(f => f.StudentId == studentId)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<FeedbackGradeEntity>> GetByCourseIdAsync(Guid courseId)
+    {
+        return await _context.FeedbackGradeEntities
+            .Where(f => f.CourseId == courseId)
+            .ToListAsync();
+    }
+
+    public async Task AddAsync(FeedbackGradeEntity feedback)
+    {
+        await _context.FeedbackGradeEntities.AddAsync(feedback);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdateAsync(FeedbackGradeEntity feedback)
+    {
+        _context.FeedbackGradeEntities.Update(feedback);
+        await _context.SaveChangesAsync();
     }
     
-
-    public async Task UpdateAsync(Guid id, int grade, string feedback,
-        CancellationToken cancellationToken)
-    {
-        await context.FeedbackGradeEntities.Where(x => x.StudentId == id)
-            .ExecuteUpdateAsync(s => s
-                .SetProperty(x => x.Grade, x => grade)
-                .SetProperty(x => x.Feedback, x => feedback), cancellationToken: cancellationToken);
-    }
-
-    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
-    {
-        await context.FeedbackGradeEntities
-            .Where(x => x.StudentId == id)
-            .ExecuteDeleteAsync(cancellationToken);
-    }
 }

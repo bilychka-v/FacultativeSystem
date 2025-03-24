@@ -1,14 +1,14 @@
 using FacultativeSystem.Application.Models;
 using FacultativeSystem.Domain.Entities;
 
-namespace FacultativeSystem.Application.Abstractions;
+namespace FacultativeSystem.Domain.Repositories;
 
 public interface IFeedbackGradeRepository
 {
-    Task CreateAsync(FeedbackGradeEntity feedbackGrade, CancellationToken cancellationToken);
-    Task<List<FeedbackGradeEntity>> GetByStudentIdAsync(Guid studentId, CancellationToken cancellationToken);
-
-    Task UpdateAsync(Guid id, int grade, string feedback, CancellationToken cancellationToken);
-
-    Task DeleteAsync(Guid id, CancellationToken cancellationToken);
+    Task<IEnumerable<FeedbackGradeEntity>> GetAllAsync();
+    Task<FeedbackGradeEntity?> GetByIdAsync(Guid id);
+    Task<IEnumerable<FeedbackGradeEntity>> GetByStudentIdAsync(Guid studentId);
+    Task<IEnumerable<FeedbackGradeEntity>> GetByCourseIdAsync(Guid courseId);
+    Task AddAsync(FeedbackGradeEntity feedback);
+    Task UpdateAsync(FeedbackGradeEntity feedback);
 }
