@@ -29,7 +29,11 @@ public class StudentController:ControllerBase
 
         await _studentService.CreateAsync(student);
 
-        var response = new StudentResponse(Id: student.Id, UserName: student.UserName);
+        var response = new StudentResponse
+            (
+                Id: student.Id, 
+                UserName: student.UserName,
+                new List<string>());
 
         return Ok(response);
     }
@@ -40,10 +44,10 @@ public class StudentController:ControllerBase
         var students = await _studentService.GetAllAsync();
         var response = students.Select(student => new StudentResponse(
             Id:  student.Id,
-            UserName: student.UserName
+            UserName: student.UserName,
+            Courses: student.Courses
         )).ToList(); 
-
-        // var response = students.Adapt<List<StudentResponse>>();
+        
         return Ok(response);
     }
 

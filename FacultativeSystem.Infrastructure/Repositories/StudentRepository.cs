@@ -10,7 +10,6 @@ public class StudentRepository(DataAccess context) : IStudentRepository
 {
     public async Task CreateAsync(StudentEntity studentEntity, CancellationToken cancellationToken = default)
     {
-        // var studentEntity = student.Adapt<StudentEntity>();
         await context.Students.AddAsync(studentEntity, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
     }
@@ -21,7 +20,6 @@ public class StudentRepository(DataAccess context) : IStudentRepository
             .AsNoTracking()
             .ToListAsync(cancellationToken);
 
-        // var students = studentEntites.Adapt<List<Student>>();
         return studentEntites;
     }
 
@@ -29,8 +27,6 @@ public class StudentRepository(DataAccess context) : IStudentRepository
     {
          var studentEntity = await context.Students.FindAsync( id, cancellationToken);
          if(studentEntity is null) throw new Exception("Student not found");
-         
-         // var student = studentEntity.Adapt<Student>();
          
          return studentEntity;
     }
