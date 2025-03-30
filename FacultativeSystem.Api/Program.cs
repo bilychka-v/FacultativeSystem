@@ -35,6 +35,8 @@ builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddScoped<IFeedbackGradeService, FeedbackGradeService>();
 builder.Services.AddScoped<IFeedbackGradeRepository, FeedbackGradeRepository>();
 
+builder.Services.AddScoped<ITokenRepository, TokenRepository>();
+
 builder.Services.RegisterMappings();
 
 builder.Services.AddIdentityCore<IdentityUser>()
