@@ -1,5 +1,6 @@
 using FacultativeSystem.Api.Contracts;
 using FacultativeSystem.Application.Abstractions;
+using FacultativeSystem.Application.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using LoginRequest = Microsoft.AspNetCore.Identity.Data.LoginRequest;
@@ -9,7 +10,7 @@ namespace FacultativeSystem.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class AuthController(UserManager<IdentityUser> userManager, ITokenRepository tokenRepository): ControllerBase
+public class AuthController(UserManager<IdentityUser> userManager, ITokenRepository tokenRepository, ITeacherService teacherService): ControllerBase
 {
     [HttpPost]
     [Route("login")]
@@ -40,7 +41,7 @@ public class AuthController(UserManager<IdentityUser> userManager, ITokenReposit
     
     [HttpPost]
     [Route("register")]
-    public async Task<ActionResult> Register([FromBody] RegisterRequest request)
+    public async Task<ActionResult> RegisterStudent([FromBody] RegisterRequest request)
     {
         var user = new IdentityUser
         {
@@ -83,4 +84,55 @@ public class AuthController(UserManager<IdentityUser> userManager, ITokenReposit
         return ValidationProblem(ModelState);
     }
     
+    [HttpPost]
+    [Route("register/teacher")]
+    public async Task<ActionResult> RegisterTeacher([FromBody] RegisterRequest request)
+    {
+        var user = new IdentityUser
+        {
+            UserName = request.UserName,
+            Email = request.Email?.Trim()
+
+        };
+        
+        var identityResult = userManager.CreateAsync(user, request.Password);
+
+        if (identityResult.Result.Succeeded)
+        {
+            identityResult = Task.FromResult(await userManager.AddToRoleAsync(user, "teacher"));
+
+            if (identityResult.Result.Succeeded)
+            {
+                var teacher = new Teacher()
+                {
+                    UserName = user.UserName,
+                    Courses = new List<string>()
+                };
+                await teacherService.CreateAsync(teacher);
+                return Ok();
+            }
+            else
+            {
+                if (identityResult.Result.Errors.Any())
+                {
+                    foreach (var error in identityResult.Result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (identityResult.Result.Errors.Any())
+            {
+                foreach (var error in identityResult.Result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+            }
+        }
+        return ValidationProblem(ModelState);
+    }
+
 }

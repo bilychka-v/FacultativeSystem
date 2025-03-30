@@ -9,24 +9,24 @@ namespace FacultativeSystem.Api.Controllers;
 [Route("api/[controller]")]
 public class TeacherController(ITeacherService teacherService) : ControllerBase
 {
-    [HttpPost]
-    public async Task<ActionResult> CreateTeacher([FromBody] TeacherRequest request)
-    {
-        var teacher = new Teacher
-        {
-            Id = Guid.NewGuid(),
-            UserName = request.UserName
-        };
-        await teacherService.CreateAsync(teacher);
-
-        var response = new TeacherResponse
-        (
-            teacher.Id,
-            teacher.UserName,
-            new List<string>());
-
-        return Ok(response);
-    }
+    // [HttpPost]
+    // public async Task<ActionResult> CreateTeacher([FromBody] TeacherRequest request)
+    // {
+    //     var teacher = new Teacher
+    //     {
+    //         Id = Guid.NewGuid(),
+    //         UserName = request.UserName
+    //     };
+    //     await teacherService.CreateAsync(teacher);
+    //
+    //     var response = new TeacherResponse
+    //     (
+    //         teacher.Id,
+    //         teacher.UserName,
+    //         new List<string>());
+    //
+    //     return Ok(response);
+    // }
 
     [HttpGet]
     public async Task<ActionResult<List<TeacherResponse>>> GetAllTeachers()
