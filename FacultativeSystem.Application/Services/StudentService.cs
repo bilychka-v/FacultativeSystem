@@ -7,11 +7,6 @@ namespace FacultativeSystem.Application.Services;
 
 public class StudentService(IStudentRepository studentRepository, IMapper mapper) : IStudentService
 {
-    public async Task CreateAsync(Student student, CancellationToken cancellationToken = default)
-    {
-        var studentEntity = mapper.Map<StudentEntity>(student);
-        await studentRepository.CreateAsync(studentEntity, cancellationToken);
-    }
 
     public async Task<List<Student>> GetAllAsync(CancellationToken cancellationToken = default)
     {
@@ -29,5 +24,12 @@ public class StudentService(IStudentRepository studentRepository, IMapper mapper
     public async Task<Guid> UpdateAsync(Guid id, string name, CancellationToken cancellationToken = default)
     {
         return await studentRepository.UpdateAsync(id, name, cancellationToken);
+    }
+
+    public async Task<Student> UpdateStudentCourse(Guid studentId, Guid courseId, CancellationToken cancellationToken = default)
+    {
+        await studentRepository.UpdateStudentCourse(studentId, courseId, cancellationToken);
+        var updatedStudentEntity = await studentRepository.GetByIdAsync(studentId, cancellationToken);
+        return mapper.Map<Student>(updatedStudentEntity);
     }
 }

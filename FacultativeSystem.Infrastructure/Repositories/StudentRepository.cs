@@ -41,4 +41,32 @@ public class StudentRepository(DataAccess context) : IStudentRepository
         return studentEntity.Id;
         
     }
+
+    public async Task UpdateStudentCourse(Guid studentId, Guid courseId, CancellationToken cancellationToken = default)
+    {
+        // Перевірка, чи студент уже записаний на даний курс (якщо існує запис у фідбек-таблиці)
+        var existingEnrollment = await context.FeedbackGradeEntities
+            .FirstOrDefaultAsync(fg => fg.StudentId == studentId && fg.CourseId == courseId, cancellationToken);
+
+        if (existingEnrollment != null)
+        {
+            // Студент уже записаний, можна вийти або оновити існуючий запис, якщо потрібно
+            return;
+        }
+
+        // Створення нового запису фідбеку як запису про запис студента на курс
+        var newEnrollment = new FeedbackGradeEntity
+        {
+            Id = Guid.NewGuid(),
+            StudentId = studentId,
+            CourseId = courseId,
+            Grade = 0,                  // Початкове значення оцінки (може бути змінено при наданні фідбеку)
+            Feedback = string.Empty,    // Порожній фідбек, який заповнюватиметься викладачем
+            GradedAt = DateTime.UtcNow  // Дата запису або може бути іншою логікою
+        };
+
+        context.FeedbackGradeEntities.Add(newEnrollment);
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
 }

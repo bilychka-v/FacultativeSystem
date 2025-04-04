@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FacultativeSystem.Api.Controllers;
 [ApiController]
-[Route("Student")]
+[Route("api/[controller]")]
 public class StudentController:ControllerBase
 {
     private readonly IStudentService _studentService;
@@ -17,27 +17,7 @@ public class StudentController:ControllerBase
     {
         _studentService = studentService;
     }
-
-    [HttpPost]
-    public async Task<ActionResult> CreateStudent([FromBody] StudentRequest request)
-    {
-        var student = new Student()
-        {
-            Id = Guid.NewGuid(), 
-            UserName = request.UserName
-        };
-
-        await _studentService.CreateAsync(student);
-
-        var response = new StudentResponse
-            (
-                Id: student.Id, 
-                UserName: student.UserName,
-                new List<string>());
-
-        return Ok(response);
-    }
-
+    
     [HttpGet]
     public async Task<ActionResult<List<StudentResponse>>> GetStudents()
     {
@@ -56,6 +36,13 @@ public class StudentController:ControllerBase
     {
         var studentId = await _studentService.UpdateAsync(id, request.UserName);
         return Ok(studentId);
+    }
+
+    [HttpPut("{id:guid}/course")]
+    public async Task<ActionResult> UpdateStudent(Guid id, [FromBody] StudentJoinCourse request)
+    {
+        await _studentService.UpdateStudentCourse(id, request.CourseId);
+        return Ok();
     }
     
 }
