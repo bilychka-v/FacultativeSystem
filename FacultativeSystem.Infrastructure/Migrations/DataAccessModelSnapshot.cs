@@ -67,15 +67,14 @@ namespace FacultativeSystem.Infrastructure.Migrations
                     b.Property<DateTime>("GradedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("StudentEntityId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("StudentId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StudentEntityId");
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("StudentId");
 
                     b.ToTable("FeedbackGradeEntities");
                 });
@@ -124,9 +123,21 @@ namespace FacultativeSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("FacultativeSystem.Domain.Entities.FeedbackGradeEntity", b =>
                 {
-                    b.HasOne("FacultativeSystem.Domain.Entities.StudentEntity", null)
+                    b.HasOne("FacultativeSystem.Domain.Entities.CourseEntity", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FacultativeSystem.Domain.Entities.StudentEntity", "Student")
                         .WithMany("FeedbackGradeEntities")
-                        .HasForeignKey("StudentEntityId");
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("FacultativeSystem.Domain.Entities.StudentEntity", b =>

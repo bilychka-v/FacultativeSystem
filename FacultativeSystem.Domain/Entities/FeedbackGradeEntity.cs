@@ -13,8 +13,10 @@ public class FeedbackGradeEntity
     // FeedbackGradeEntity 1--> StudentEntities
     [ForeignKey("StudentId")]
     public Guid StudentId { get; set; }
+    public StudentEntity? Student { get; set; }
     
     // FeedbackGradeEntity 1--> CourseEntities
     [ForeignKey("CourseId")]
     public Guid CourseId { get; set; }
+    public CourseEntity? Course { get; set; }
 }

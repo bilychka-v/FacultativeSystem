@@ -7,7 +7,7 @@ public interface IFeedbackGradeRepository
 {
     Task<IEnumerable<FeedbackGradeEntity>> GetAllAsync();
     Task<FeedbackGradeEntity?> GetByIdAsync(Guid id);
-    Task<IEnumerable<FeedbackGradeEntity>> GetByStudentIdAsync(Guid studentId);
+    Task<List<FeedbackGradeEntity>> GetByStudentIdAsync(Guid studentId);
     Task<IEnumerable<FeedbackGradeEntity>> GetByCourseIdAsync(Guid courseId);
     Task AddAsync(FeedbackGradeEntity feedback);
     Task UpdateAsync(FeedbackGradeEntity feedback);

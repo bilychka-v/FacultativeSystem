@@ -13,11 +13,11 @@ public class FeedbackGradeService(IMapper mapper, IFeedbackGradeRepository repos
         await repository.AddAsync(feedbackGradeEntity);
     }
 
-    public async Task<FeedbackGrade?> GetByIdAsync(Guid id)
+    public async Task<List<FeedbackGrade?>> GetByIdAsync(Guid id)
     {
         var feedbackGrade = await repository.GetByIdAsync(id);
         
-        return mapper.Map<FeedbackGrade>(feedbackGrade);
+        return mapper.Map<List<FeedbackGrade>>(feedbackGrade)!;
     }
 
     public async Task<List<FeedbackGrade>> GetByStudentIdAsync(Guid studentId)

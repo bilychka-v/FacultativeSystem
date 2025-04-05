@@ -1,6 +1,3 @@
-using FacultativeSystem.Api.Contracts;
-using FacultativeSystem.Application.Models;
-using FacultativeSystem.Domain.Entities;
 using Mapster;
 using MapsterMapper;
 

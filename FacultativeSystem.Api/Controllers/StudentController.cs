@@ -4,6 +4,7 @@ using FacultativeSystem.Application.Models;
 using FacultativeSystem.Domain.Entities;
 using FacultativeSystem.Infrastructure;
 using Mapster;
+using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FacultativeSystem.Api.Controllers;
@@ -12,10 +13,12 @@ namespace FacultativeSystem.Api.Controllers;
 public class StudentController:ControllerBase
 {
     private readonly IStudentService _studentService;
+    private readonly IFeedbackGradeService _feedbackGradeService;
 
-    public StudentController(IStudentService studentService)
+    public StudentController(IStudentService studentService, IFeedbackGradeService feedbackGradeService) 
     {
         _studentService = studentService;
+        _feedbackGradeService = feedbackGradeService;
     }
     
     [HttpGet]
@@ -25,7 +28,7 @@ public class StudentController:ControllerBase
         var response = students.Select(student => new StudentResponse(
             Id:  student.Id,
             UserName: student.UserName,
-            Courses: student.Courses
+            Courses: student.Courses ?? new List<string>()
         )).ToList(); 
         
         return Ok(response);
@@ -43,6 +46,23 @@ public class StudentController:ControllerBase
     {
         await _studentService.UpdateStudentCourse(id, request.CourseId);
         return Ok();
+    }
+
+    [HttpGet]
+    [Route("{id:Guid}/grades")]
+    public async Task<ActionResult<List<FeedbackResponse>>> GetStudentGrades([FromRoute] Guid id)
+    {
+        var feedbackGrades = await _feedbackGradeService.GetByStudentIdAsync(id);
+        
+        var response = feedbackGrades.Select(f => new FeedbackResponse
+        (
+            Course: f.Course?.Name ?? "Unknown Course",
+            Grade: f.Grade,
+            Feedback: f.Feedback
+        )).ToList();
+        
+        return Ok(response);
+
     }
     
 }

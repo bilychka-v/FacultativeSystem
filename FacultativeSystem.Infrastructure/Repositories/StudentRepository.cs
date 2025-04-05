@@ -1,7 +1,5 @@
 using FacultativeSystem.Application.Abstractions;
-using FacultativeSystem.Application.Models;
 using FacultativeSystem.Domain.Entities;
-using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 namespace FacultativeSystem.Infrastructure.Repositories;
@@ -18,6 +16,8 @@ public class StudentRepository(DataAccess context) : IStudentRepository
     {
         var studentEntites = await context.Students
             .AsNoTracking()
+            .Include(c=>c.FeedbackGradeEntities)!
+            .ThenInclude(fg=>fg.Course)
             .ToListAsync(cancellationToken);
 
         return studentEntites;

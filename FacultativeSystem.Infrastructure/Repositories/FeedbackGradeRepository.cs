@@ -28,11 +28,12 @@ public class FeedbackGradeRepository : IFeedbackGradeRepository
         return await _context.FeedbackGradeEntities.FindAsync(id);
     }
 
-    public async Task<IEnumerable<FeedbackGradeEntity>> GetByStudentIdAsync(Guid studentId)
+    public async Task<List<FeedbackGradeEntity>> GetByStudentIdAsync(Guid studentId)
     {
-        return await _context.FeedbackGradeEntities
+        return (await _context.FeedbackGradeEntities
+            .Include(f => f.Course)
             .Where(f => f.StudentId == studentId)
-            .ToListAsync();
+            .ToListAsync())!;
     }
 
     public async Task<IEnumerable<FeedbackGradeEntity>> GetByCourseIdAsync(Guid courseId)

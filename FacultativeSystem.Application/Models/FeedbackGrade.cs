@@ -14,4 +14,6 @@ public class FeedbackGrade
     
     // FeedbackGradeEntity 1--> CourseEntities
     public Guid CourseId { get; set; }
+    
+    public Course? Course { get; set; }
 }

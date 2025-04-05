@@ -11,7 +11,16 @@ public class StudentService(IStudentRepository studentRepository, IMapper mapper
     public async Task<List<Student>> GetAllAsync(CancellationToken cancellationToken = default)
     {
          var studentEntites = await studentRepository.GetAllAsync(cancellationToken);
-         return mapper.Map<List<Student>>(studentEntites);
+         return studentEntites.Select(student => new Student
+         {
+             Id = student.Id,
+             UserName = student.UserName,
+             Courses = student.FeedbackGradeEntities?
+                 .Where(feedback => feedback.Course !=null)
+                 .Select(feedback => feedback.Course!.Name)
+                 .ToList() ?? new List<string>()
+
+         }).ToList();
     }
 
     public async Task<Student> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
