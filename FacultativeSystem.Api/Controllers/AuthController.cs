@@ -1,6 +1,7 @@
 using FacultativeSystem.Api.Contracts;
 using FacultativeSystem.Application.Abstractions;
 using FacultativeSystem.Application.Models;
+using FacultativeSystem.Application.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using LoginRequest = Microsoft.AspNetCore.Identity.Data.LoginRequest;
@@ -10,7 +11,7 @@ namespace FacultativeSystem.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class AuthController(UserManager<IdentityUser> userManager, ITokenRepository tokenRepository, ITeacherService teacherService): ControllerBase
+public class AuthController(UserManager<IdentityUser> userManager, ITokenRepository tokenRepository, ITeacherService teacherService, IStudentService studentService): ControllerBase
 {
     [HttpPost]
     [Route("login")]
@@ -30,7 +31,8 @@ public class AuthController(UserManager<IdentityUser> userManager, ITokenReposit
                 var response = new LoginResponse(
                     Email: request.Email,
                     Token: jwtToken,
-                    Roles: roles.ToList()
+                    Roles: roles.ToList(),
+                    Id: identity.Id
                 );
                 return Ok(response);
             }
@@ -58,6 +60,13 @@ public class AuthController(UserManager<IdentityUser> userManager, ITokenReposit
 
             if (identityResult.Result.Succeeded)
             {
+                var student = new Student()
+                {
+                    UserName = user.UserName,
+                    Id = new Guid(user.Id),
+                    Courses = new List<string>()
+                };
+                await studentService.CreateAsync(student);
                 return Ok();
             }
             else

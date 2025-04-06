@@ -4,5 +4,6 @@ public record LoginResponse
 (
     string Email,
     string Token,
-    List<string> Roles
+    List<string> Roles,
+    string Id
 );

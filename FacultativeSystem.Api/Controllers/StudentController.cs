@@ -14,11 +14,13 @@ public class StudentController:ControllerBase
 {
     private readonly IStudentService _studentService;
     private readonly IFeedbackGradeService _feedbackGradeService;
+    private readonly ILogger<StudentController> _logger;
 
-    public StudentController(IStudentService studentService, IFeedbackGradeService feedbackGradeService) 
+    public StudentController(IStudentService studentService, IFeedbackGradeService feedbackGradeService, ILogger<StudentController> logger) 
     {
         _studentService = studentService;
         _feedbackGradeService = feedbackGradeService;
+        _logger = logger;
     }
     
     [HttpGet]
@@ -41,12 +43,21 @@ public class StudentController:ControllerBase
         return Ok(studentId);
     }
 
-    [HttpPut("{id:guid}/course")]
-    public async Task<ActionResult> UpdateStudent(Guid id, [FromBody] StudentJoinCourse request)
+    [HttpPut("{studentId:guid}/course")]
+    public async Task<ActionResult> UpdateStudent(Guid studentId, [FromBody] StudentJoinCourse request)
     {
-        await _studentService.UpdateStudentCourse(id, request.CourseId);
-        return Ok();
+        try
+        {
+            await _studentService.UpdateStudentCourse(studentId, request.CourseId);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error while updating student course: {ex.Message}", ex);
+            return StatusCode(500, "Internal Server Error");
+        }
     }
+
 
     [HttpGet]
     [Route("{id:Guid}/grades")]

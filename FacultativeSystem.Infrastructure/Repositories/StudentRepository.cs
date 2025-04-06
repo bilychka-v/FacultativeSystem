@@ -1,10 +1,11 @@
 using FacultativeSystem.Application.Abstractions;
 using FacultativeSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace FacultativeSystem.Infrastructure.Repositories;
 
-public class StudentRepository(DataAccess context) : IStudentRepository
+public class StudentRepository(DataAccess context, ILogger<StudentRepository> _logger) : IStudentRepository
 {
     public async Task CreateAsync(StudentEntity studentEntity, CancellationToken cancellationToken = default)
     {
@@ -44,29 +45,41 @@ public class StudentRepository(DataAccess context) : IStudentRepository
 
     public async Task UpdateStudentCourse(Guid studentId, Guid courseId, CancellationToken cancellationToken = default)
     {
-        // Перевірка, чи студент уже записаний на даний курс (якщо існує запис у фідбек-таблиці)
-        var existingEnrollment = await context.FeedbackGradeEntities
-            .FirstOrDefaultAsync(fg => fg.StudentId == studentId && fg.CourseId == courseId, cancellationToken);
-
-        if (existingEnrollment != null)
+        try
         {
-            // Студент уже записаний, можна вийти або оновити існуючий запис, якщо потрібно
-            return;
+            _logger.LogInformation($"Updating enrollment: StudentId = {studentId}, CourseId = {courseId}");
+            
+            var existingEnrollment = await context.FeedbackGradeEntities
+                .FirstOrDefaultAsync(fg => fg.StudentId == studentId && fg.CourseId == courseId, cancellationToken);
+
+            if (existingEnrollment != null)
+            {
+                _logger.LogInformation("Student is already enrolled in the course.");
+                return;
+            }
+            
+            var newEnrollment = new FeedbackGradeEntity
+            {
+                Id = Guid.NewGuid(),
+                StudentId = studentId,
+                CourseId = courseId,
+                Grade = 0,
+                Feedback = string.Empty,
+                GradedAt = DateTime.UtcNow
+            };
+
+            // Додавання нового запису до контексту
+            context.FeedbackGradeEntities.Add(newEnrollment);
+            await context.SaveChangesAsync(cancellationToken);
+        
+            _logger.LogInformation("Enrollment added successfully.");
         }
-
-        // Створення нового запису фідбеку як запису про запис студента на курс
-        var newEnrollment = new FeedbackGradeEntity
+        catch (Exception ex)
         {
-            Id = Guid.NewGuid(),
-            StudentId = studentId,
-            CourseId = courseId,
-            Grade = 0,                  // Початкове значення оцінки (може бути змінено при наданні фідбеку)
-            Feedback = string.Empty,    // Порожній фідбек, який заповнюватиметься викладачем
-            GradedAt = DateTime.UtcNow  // Дата запису або може бути іншою логікою
-        };
-
-        context.FeedbackGradeEntities.Add(newEnrollment);
-        await context.SaveChangesAsync(cancellationToken);
+            _logger.LogError($"An error occurred while updating student course: {ex.Message}", ex);
+            throw;  // Перериваємо метод, щоб викликати глобальний обробник помилок
+        }
     }
+
 
 }

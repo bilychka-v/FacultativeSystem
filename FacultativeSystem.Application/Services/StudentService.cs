@@ -7,6 +7,12 @@ namespace FacultativeSystem.Application.Services;
 
 public class StudentService(IStudentRepository studentRepository, IMapper mapper) : IStudentService
 {
+    
+    public async Task CreateAsync(Student student, CancellationToken cancellationToken = default)
+    {
+        var studentEntity = mapper.Map<StudentEntity>(student);
+        await studentRepository.CreateAsync(studentEntity, cancellationToken);
+    }
 
     public async Task<List<Student>> GetAllAsync(CancellationToken cancellationToken = default)
     {
