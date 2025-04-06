@@ -38,16 +38,6 @@ public class CourseRepository(DataAccess context) : ICourseRepository
         return courseEntity;
     }
 
-    // public async Task<Guid> UpdateAsync(Guid id, Guid idTeacher, CancellationToken cancellationToken = default)
-    // {
-    //     var courseEntity = await context.Courses.FindAsync(id, cancellationToken);
-    //     if(courseEntity is null) throw new Exception("Course not found");
-    //
-    //     courseEntity.TeacherId = idTeacher;
-    //     await context.SaveChangesAsync(cancellationToken);
-    //     return courseEntity.Id;
-    // }
-
     public async Task<CourseEntity?> UpdateAsync(CourseEntity courseEntity,
         CancellationToken cancellationToken = default)
     {
@@ -69,5 +59,12 @@ public class CourseRepository(DataAccess context) : ICourseRepository
         if (course != null) context.Courses.Remove(course);
         await context.SaveChangesAsync(cancellationToken);
         return course;
+    }
+
+    public async Task<List<CourseEntity?>> GetCourseByTeacherId(Guid teacherId, CancellationToken cancellationToken = default)
+    {
+        var teacher = await context.Teachers.FindAsync(teacherId, cancellationToken);
+        List<CourseEntity?> courses = await context.Courses.Where(c => c.TeacherId == teacher.Id).ToListAsync(cancellationToken);
+        return courses;
     }
 }

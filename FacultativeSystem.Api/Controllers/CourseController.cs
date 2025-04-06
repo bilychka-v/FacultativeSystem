@@ -10,7 +10,7 @@ namespace FacultativeSystem.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 
-public class CourseController(ICourseService courseService) : ControllerBase
+public class CourseController(ICourseService courseService, IFeedbackGradeService feedbackGradeService) : ControllerBase
 {
     [HttpPost]
     public async Task<ActionResult<Guid>> CreateCourse([FromBody] CourseRequest courseRequest)
@@ -105,10 +105,19 @@ public class CourseController(ICourseService courseService) : ControllerBase
         return Ok(response);
     }
 
-    // [HttpPut("/AddTeacher")]
-    // public async Task<ActionResult<Guid>> AddTeacherToCourse(Guid id, [FromBody] CourseRequest courseRequest)
-    // {
-    //     var courseId = await courseService.UpdateAsync(id, courseRequest.Id);
-    //     return Ok(courseId);
-    // }
+    [HttpGet]
+    [Route("{courseId:Guid}/grades")]
+    public async Task<ActionResult<List<StudentGrades>>> GetStudentGradesByCourseId(Guid courseId)
+    {
+        var grades = await feedbackGradeService.GetGradesByCourseIdAsync(courseId);
+
+        var response = grades.Select(g => new StudentGrades(
+            StudentName: g.StudentName,
+            Grade: g.Grade,
+            Feedback: g.Feedback
+        )).ToList();
+
+        return Ok(response);
+    }
+
 }

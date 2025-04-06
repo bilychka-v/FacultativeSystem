@@ -11,4 +11,6 @@ public interface IFeedbackGradeRepository
     Task<IEnumerable<FeedbackGradeEntity>> GetByCourseIdAsync(Guid courseId);
     Task AddAsync(FeedbackGradeEntity feedback);
     Task UpdateAsync(FeedbackGradeEntity feedback);
+    
+    Task<List<FeedbackGradeEntity>> GetGradesByCourseId(Guid courseId, CancellationToken cancellationToken = default);
 }

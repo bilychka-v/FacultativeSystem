@@ -80,6 +80,4 @@ public class StudentRepository(DataAccess context, ILogger<StudentRepository> _l
             throw;  // Перериваємо метод, щоб викликати глобальний обробник помилок
         }
     }
-
-
 }

@@ -7,7 +7,7 @@ namespace FacultativeSystem.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class TeacherController(ITeacherService teacherService) : ControllerBase
+public class TeacherController(ITeacherService teacherService, ICourseService courseService) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<List<TeacherResponse>>> GetAllTeachers()
@@ -26,21 +26,40 @@ public class TeacherController(ITeacherService teacherService) : ControllerBase
 
     }
 
+    // [HttpGet]
+    // [Route("{id:Guid}")]
+    //
+    // public async Task<ActionResult<TeacherResponse>> GetTeacher([FromRoute] Guid id)
+    // {
+    //     var teacher = await teacherService.GetByIdAsync(id);
+    //     if (teacher is null)
+    //         return NotFound();
+    //
+    //     var response = new TeacherResponse
+    //     (
+    //         Id : teacher.Id,
+    //         UserName : teacher.UserName,
+    //         Courses : teacher.Courses.ToList()
+    //     );
+    //     return Ok(response);
+    // }
+
     [HttpGet]
-    [Route("{id:Guid}")]
-
-    public async Task<ActionResult<TeacherResponse>> GetTeacher([FromRoute] Guid id)
+    [Route("{id:Guid}/courses")]
+    public async Task<ActionResult<List<CourseByTeacherResponse>>> GetCoursesByTeacherId([FromRoute] Guid id)
     {
-        var teacher = await teacherService.GetByIdAsync(id);
-        if (teacher is null)
-            return NotFound();
+        var course = await courseService.GetCourseByTeacherId(id);
 
-        var response = new TeacherResponse
-        (
-            Id : teacher.Id,
-            UserName : teacher.UserName,
-            Courses : teacher.Courses.ToList()
-        );
+        var response = course
+            .Where(c => c != null)
+            .Select(c => new CourseByTeacherResponse
+            (
+                c!.Id,
+                c!.Name,
+                c.StartDate,
+                c.EndDate
+            )
+        ).ToList();
         return Ok(response);
     }
 }

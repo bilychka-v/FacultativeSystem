@@ -44,4 +44,10 @@ public class CourseService(ICourseRepository courseRepository, IMapper mapper): 
         var courseEntity =  await courseRepository.DeleteAsync(id, cancellationToken);
         return mapper.Map<Course>(courseEntity);
     }
+
+    public async Task<List<Course?>> GetCourseByTeacherId(Guid teacherId, CancellationToken cancellationToken = default)
+    {
+        var courseEntity = await courseRepository.GetCourseByTeacherId(teacherId, cancellationToken);
+        return mapper.Map<List<Course>>(courseEntity)!;
+    }
 }

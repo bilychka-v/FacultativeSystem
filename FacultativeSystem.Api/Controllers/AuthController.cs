@@ -47,7 +47,7 @@ public class AuthController(UserManager<IdentityUser> userManager, ITokenReposit
     {
         var user = new IdentityUser
         {
-            UserName = request.Email?.Trim(),
+            UserName = request.UserName?.Trim(),
             Email = request.Email?.Trim()
 
         };
@@ -115,6 +115,7 @@ public class AuthController(UserManager<IdentityUser> userManager, ITokenReposit
                 var teacher = new Teacher()
                 {
                     UserName = user.UserName,
+                    Id = new Guid(user.Id),
                     Courses = new List<string>()
                 };
                 await teacherService.CreateAsync(teacher);

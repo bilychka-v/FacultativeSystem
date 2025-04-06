@@ -31,4 +31,16 @@ public class FeedbackGradeService(IMapper mapper, IFeedbackGradeRepository repos
         var feedbackGrades = await repository.GetByCourseIdAsync(courseId);
         return mapper.Map<List<FeedbackGrade>>(feedbackGrades);
     }
+
+    public async Task<List<FeedbackGrade>> GetGradesByCourseIdAsync(Guid courseId)
+    {
+        var grades = await repository.GetGradesByCourseId(courseId);
+        return grades.Select(g => new FeedbackGrade
+        {
+            StudentName = g.Student.UserName,
+            Grade = g.Grade,
+            Feedback = g.Feedback
+        }).ToList();
+    }
+
 }

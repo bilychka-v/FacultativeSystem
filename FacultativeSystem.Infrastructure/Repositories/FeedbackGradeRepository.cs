@@ -55,4 +55,12 @@ public class FeedbackGradeRepository : IFeedbackGradeRepository
         await _context.SaveChangesAsync();
     }
     
+    public async Task<List<FeedbackGradeEntity>> GetGradesByCourseId(Guid courseId, CancellationToken cancellationToken = default)
+    {
+        return await _context.FeedbackGradeEntities
+            .Include(g => g.Student)
+            .Where(g => g.CourseId == courseId)
+            .ToListAsync(cancellationToken);
+    }
+    
 }
