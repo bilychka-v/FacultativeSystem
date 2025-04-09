@@ -2,6 +2,9 @@
 # JetBrains Rider / IntelliJ
 # ====================
 .idea/
+.idea.FacultativeSystem/
+.idea.FacultativeSystem/.idea/
+/.config/
 *.iml
 /shelf/
 /workspace.xml
@@ -57,9 +60,4 @@ appsettings.*.json
 .DS_Store
 Thumbs.db
 
-# ====================
-# Docker (якщо використовуєш)
-# ====================
-**/Dockerfile
-**/docker-compose*
 
