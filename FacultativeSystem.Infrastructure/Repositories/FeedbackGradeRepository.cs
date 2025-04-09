@@ -14,18 +14,12 @@ public class FeedbackGradeRepository : IFeedbackGradeRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<FeedbackGradeEntity>> GetAllAsync()
-    {
-        var feedBackEntities = await _context.FeedbackGradeEntities
-            .AsNoTracking()
-            .ToListAsync();
-        return feedBackEntities;
-        
-    }
-
     public async Task<FeedbackGradeEntity?> GetByIdAsync(Guid id)
     {
-        return await _context.FeedbackGradeEntities.FindAsync(id);
+        return await _context.FeedbackGradeEntities
+            .Include(f=>f.Course)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(f => f.Id == id);
     }
 
     public async Task<List<FeedbackGradeEntity>> GetByStudentIdAsync(Guid studentId)
@@ -35,25 +29,6 @@ public class FeedbackGradeRepository : IFeedbackGradeRepository
             .Where(f => f.StudentId == studentId)
             .ToListAsync())!;
     }
-
-    public async Task<IEnumerable<FeedbackGradeEntity>> GetByCourseIdAsync(Guid courseId)
-    {
-        return await _context.FeedbackGradeEntities
-            .Where(f => f.CourseId == courseId)
-            .ToListAsync();
-    }
-
-    public async Task AddAsync(FeedbackGradeEntity feedback)
-    {
-        await _context.FeedbackGradeEntities.AddAsync(feedback);
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task UpdateAsync(FeedbackGradeEntity feedback)
-    {
-        _context.FeedbackGradeEntities.Update(feedback);
-        await _context.SaveChangesAsync();
-    }
     
     public async Task<List<FeedbackGradeEntity>> GetGradesByCourseId(Guid courseId, CancellationToken cancellationToken = default)
     {
@@ -62,5 +37,21 @@ public class FeedbackGradeRepository : IFeedbackGradeRepository
             .Where(g => g.CourseId == courseId)
             .ToListAsync(cancellationToken);
     }
+    public async Task<FeedbackGradeEntity?> UpdateGrades(FeedbackGradeEntity feedbackGrades, CancellationToken cancellationToken = default)
+    {
+        var feedback = await _context.FeedbackGradeEntities.FindAsync(feedbackGrades.Id);
+
+        if (feedback is null)
+            throw new Exception("Feedback grade not found.");
+        feedback.Id = feedbackGrades.Id;
+        feedback.Grade = feedbackGrades.Grade;
+        feedback.Feedback = feedbackGrades.Feedback;
+
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return feedback;
+    }
+
+
     
 }

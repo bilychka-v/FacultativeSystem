@@ -114,9 +114,46 @@ public class CourseController(ICourseService courseService, IFeedbackGradeServic
         var response = grades.Select(g => new StudentGrades(
             StudentName: g.StudentName,
             Grade: g.Grade,
-            Feedback: g.Feedback
+            Feedback: g.Feedback,
+            FeedbackId: g.Id
         )).ToList();
 
+        return Ok(response);
+    }
+    
+    [HttpGet]
+    [Route("{feedbackId:Guid}/feedback")]
+    public async Task<ActionResult<FeedbackResponse>> GetFeedback([FromRoute] Guid feedbackId)
+    {
+        var feedback = await feedbackGradeService.GetByIdAsync(feedbackId);
+        if (feedback is null)
+            return NotFound();
+        
+        var response = new FeedbackResponse
+        (
+           Course: feedback.Course?.Name ?? "Unknown Course",
+           Grade: feedback.Grade,
+           Feedback: feedback.Feedback
+        );
+        
+        return Ok(response);
+    }
+
+
+    [HttpPut]
+    [Route("{feedbackId:Guid}/grades")]
+
+    public async Task<ActionResult> UpdateStudentGrades(Guid feedbackId, [FromBody] Grades grade)
+    {
+        var grades = new FeedbackGrade()
+        {
+            Id = feedbackId,
+            Grade = grade.Grade,
+            Feedback = grade.Feedback
+        };
+        
+        var gradesUpdate = await feedbackGradeService.UpdateGrades(grades);
+        var response = gradesUpdate.Adapt<Grades>();
         return Ok(response);
     }
 

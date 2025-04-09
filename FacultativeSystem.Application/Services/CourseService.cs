@@ -36,6 +36,7 @@ public class CourseService(ICourseRepository courseRepository, IMapper mapper): 
     public async Task<Course?> UpdateAsync(Course course, CancellationToken cancellationToken = default)
     {
         var courseEntity = course.Adapt<CourseEntity>();
+        // var courseEntity = await courseRepository.GetByIdAsync(course.Id, cancellationToken);
         await courseRepository.UpdateAsync(courseEntity, cancellationToken);
         return mapper.Map<Course>(courseEntity);
     }

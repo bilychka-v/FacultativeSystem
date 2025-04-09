@@ -67,8 +67,7 @@ public class StudentRepository(DataAccess context, ILogger<StudentRepository> _l
                 Feedback = string.Empty,
                 GradedAt = DateTime.UtcNow
             };
-
-            // Додавання нового запису до контексту
+            
             context.FeedbackGradeEntities.Add(newEnrollment);
             await context.SaveChangesAsync(cancellationToken);
         
@@ -77,7 +76,7 @@ public class StudentRepository(DataAccess context, ILogger<StudentRepository> _l
         catch (Exception ex)
         {
             _logger.LogError($"An error occurred while updating student course: {ex.Message}", ex);
-            throw;  // Перериваємо метод, щоб викликати глобальний обробник помилок
+            throw;  
         }
     }
 }

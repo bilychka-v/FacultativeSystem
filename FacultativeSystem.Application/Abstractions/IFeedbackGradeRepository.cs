@@ -5,12 +5,10 @@ namespace FacultativeSystem.Domain.Repositories;
 
 public interface IFeedbackGradeRepository
 {
-    Task<IEnumerable<FeedbackGradeEntity>> GetAllAsync();
     Task<FeedbackGradeEntity?> GetByIdAsync(Guid id);
     Task<List<FeedbackGradeEntity>> GetByStudentIdAsync(Guid studentId);
-    Task<IEnumerable<FeedbackGradeEntity>> GetByCourseIdAsync(Guid courseId);
-    Task AddAsync(FeedbackGradeEntity feedback);
-    Task UpdateAsync(FeedbackGradeEntity feedback);
     
     Task<List<FeedbackGradeEntity>> GetGradesByCourseId(Guid courseId, CancellationToken cancellationToken = default);
+
+    Task<FeedbackGradeEntity> UpdateGrades(FeedbackGradeEntity feedbackGrades, CancellationToken cancellationToken = default);
 }

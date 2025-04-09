@@ -1,6 +1,5 @@
 using FacultativeSystem.Api.Contracts;
 using FacultativeSystem.Application.Abstractions;
-using FacultativeSystem.Application.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FacultativeSystem.Api.Controllers;
@@ -26,23 +25,23 @@ public class TeacherController(ITeacherService teacherService, ICourseService co
 
     }
 
-    // [HttpGet]
-    // [Route("{id:Guid}")]
-    //
-    // public async Task<ActionResult<TeacherResponse>> GetTeacher([FromRoute] Guid id)
-    // {
-    //     var teacher = await teacherService.GetByIdAsync(id);
-    //     if (teacher is null)
-    //         return NotFound();
-    //
-    //     var response = new TeacherResponse
-    //     (
-    //         Id : teacher.Id,
-    //         UserName : teacher.UserName,
-    //         Courses : teacher.Courses.ToList()
-    //     );
-    //     return Ok(response);
-    // }
+    [HttpGet]
+    [Route("{id:Guid}")]
+    
+    public async Task<ActionResult<TeacherResponse>> GetTeacher([FromRoute] Guid id)
+    {
+        var teacher = await teacherService.GetByIdAsync(id);
+        if (teacher is null)
+            return NotFound();
+    
+        var response = new TeacherResponse
+        (
+            Id : teacher.Id,
+            UserName : teacher.UserName,
+            Courses : teacher.Courses.ToList()
+        );
+        return Ok(response);
+    }
 
     [HttpGet]
     [Route("{id:Guid}/courses")]

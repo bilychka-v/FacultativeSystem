@@ -5,30 +5,16 @@ using MapsterMapper;
 
 public class FeedbackGradeService(IMapper mapper, IFeedbackGradeRepository repository) : IFeedbackGradeService
 {
-
-    public async Task CreateAsync(FeedbackGrade feedbackGrade)
-    {
-        var feedbackGradeEntity = mapper.Map<FeedbackGradeEntity>(feedbackGrade);
-
-        await repository.AddAsync(feedbackGradeEntity);
-    }
-
-    public async Task<List<FeedbackGrade?>> GetByIdAsync(Guid id)
+    public async Task<FeedbackGrade?> GetByIdAsync(Guid id)
     {
         var feedbackGrade = await repository.GetByIdAsync(id);
         
-        return mapper.Map<List<FeedbackGrade>>(feedbackGrade)!;
+        return mapper.Map<FeedbackGrade>(feedbackGrade)!;
     }
 
     public async Task<List<FeedbackGrade>> GetByStudentIdAsync(Guid studentId)
     {
         var feedbackGrades = await repository.GetByStudentIdAsync(studentId);
-        return mapper.Map<List<FeedbackGrade>>(feedbackGrades);
-    }
-
-    public async Task<List<FeedbackGrade>> GetByCourseIdAsync(Guid courseId)
-    {
-        var feedbackGrades = await repository.GetByCourseIdAsync(courseId);
         return mapper.Map<List<FeedbackGrade>>(feedbackGrades);
     }
 
@@ -39,8 +25,18 @@ public class FeedbackGradeService(IMapper mapper, IFeedbackGradeRepository repos
         {
             StudentName = g.Student.UserName,
             Grade = g.Grade,
-            Feedback = g.Feedback
+            Feedback = g.Feedback,
+            Id = g.Id
         }).ToList();
     }
+
+    public async Task<FeedbackGrade> UpdateGrades(FeedbackGrade feedbackGrades, CancellationToken cancellationToken = default)
+    {
+        var entity = mapper.Map<FeedbackGradeEntity>(feedbackGrades);
+        var updatedEntity = await repository.UpdateGrades(entity, cancellationToken);
+
+        return mapper.Map<FeedbackGrade>(updatedEntity);
+    }
+
 
 }

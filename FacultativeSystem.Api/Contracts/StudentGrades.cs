@@ -2,7 +2,8 @@ namespace FacultativeSystem.Api.Contracts;
 
 public record StudentGrades
     (
-        string StudentName,
+        string? StudentName,
         int Grade,
-        string Feedback
+        string Feedback,
+        Guid FeedbackId
     );
