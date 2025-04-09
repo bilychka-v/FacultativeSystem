@@ -1,5 +1,65 @@
+# ====================
+# JetBrains Rider / IntelliJ
+# ====================
+.idea/
+*.iml
+/shelf/
+/workspace.xml
+/contentModel.xml
+/projectSettingsUpdater.xml
+/modules.xml
+
+# Editor-based HTTP Client requests
+/httpRequests/
+
+# Datasource local storage ignored files
+/dataSources/
+dataSources.local.xml
+
+# ====================
+# .NET / ASP.NET Core
+# ====================
 bin/
 obj/
-/packages/
-riderModule.iml
-/_ReSharper.Caches/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.dbmdl
+*.bak
+*.backup
+*.log
+*.vspscc
+*.vssscc
+.vs/
+TestResults/
+*.coverage
+*.coveragexml
+*.testsettings
+*.vsmdi
+.trx
+
+# DotCover
+*.dotCover
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+*.nuspec
+*.psmdcp
+
+# ASP.NET Core
+wwwroot/lib/
+appsettings.*.json
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# ====================
+# Docker (якщо використовуєш)
+# ====================
+**/Dockerfile
+**/docker-compose*
+
