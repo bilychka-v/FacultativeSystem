@@ -32,15 +32,6 @@ obj/
 *.bak
 *.backup
 *.log
-*.vspscc
-*.vssscc
-.vs/
-TestResults/
-*.coverage
-*.coveragexml
-*.testsettings
-*.vsmdi
-.trx
 
 # DotCover
 *.dotCover

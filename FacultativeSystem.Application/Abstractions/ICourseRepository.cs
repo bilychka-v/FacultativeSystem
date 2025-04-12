@@ -14,4 +14,5 @@ public interface ICourseRepository
     Task<CourseEntity?> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
 
     Task<List<CourseEntity?>> GetCourseByTeacherId(Guid teacherId, CancellationToken cancellationToken = default);
+    Task<CourseEntity?> GetCourseByFeedbackId(Guid feedbackId, CancellationToken cancellationToken = default);
 }

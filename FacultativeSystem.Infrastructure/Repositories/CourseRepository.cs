@@ -1,6 +1,7 @@
 using FacultativeSystem.Application.Abstractions;
 using FacultativeSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace FacultativeSystem.Infrastructure.Repositories;
 
@@ -64,7 +65,32 @@ public class CourseRepository(DataAccess context) : ICourseRepository
     public async Task<List<CourseEntity?>> GetCourseByTeacherId(Guid teacherId, CancellationToken cancellationToken = default)
     {
         var teacher = await context.Teachers.FindAsync(teacherId, cancellationToken);
-        List<CourseEntity?> courses = await context.Courses.Where(c => c.TeacherId == teacher.Id).ToListAsync(cancellationToken);
+        List<CourseEntity?> courses = await context.Courses
+            .Where(c => c.TeacherId == teacher.Id)
+            .Include(c => c.Teacher)
+            .Select(c => new CourseEntity
+            {
+                Id = c.Id,
+                Name = c.Name,
+                StartDate = c.StartDate,
+                EndDate = c.EndDate,
+                HasUnmarkedStudents = context.FeedbackGradeEntities
+                    .Where(g => g.CourseId == c.Id)
+                    .Any(cs =>
+                        cs.CourseId == c.Id && (
+                        cs.Grade == 0 ||
+                        string.IsNullOrEmpty(cs.Feedback)))
+            })
+            .ToListAsync(cancellationToken);
         return courses;
+    }
+
+    public async Task<CourseEntity?> GetCourseByFeedbackId(Guid feedbackId,
+        CancellationToken cancellationToken = default)
+    {
+        var feedback = await context.FeedbackGradeEntities
+            .Include(c => c.Course)
+            .FirstOrDefaultAsync(f=>f.Id == feedbackId, cancellationToken);
+        return feedback?.Course;
     }
 }

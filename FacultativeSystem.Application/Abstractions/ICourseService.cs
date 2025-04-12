@@ -10,8 +10,8 @@ public interface ICourseService
     Task<Course?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
     Task<Course?> UpdateAsync(Course course, CancellationToken cancellationToken = default);
-    // Task<Guid> UpdateAsync(Guid id, Guid idTeacher, CancellationToken cancellationToken = default);
     Task<Course?> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
     Task<List<Course?>> GetCourseByTeacherId(Guid teacherId, CancellationToken cancellationToken = default);
+    Task<Course?> GetCourseByFeedbackId(Guid feedbackId, CancellationToken cancellationToken = default);
 
 }

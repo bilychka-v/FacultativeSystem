@@ -11,4 +11,5 @@ public interface IFeedbackGradeRepository
     Task<List<FeedbackGradeEntity>> GetGradesByCourseId(Guid courseId, CancellationToken cancellationToken = default);
 
     Task<FeedbackGradeEntity> UpdateGrades(FeedbackGradeEntity feedbackGrades, CancellationToken cancellationToken = default);
+    
 }

@@ -8,6 +8,7 @@ public class Course
     public string Name { get; set; } = String.Empty;
     public DateTime StartDate { get; set; } 
     public DateTime EndDate { get; set; }
+    public bool HasUnmarkedStudents { get; set; }
     
     public Guid TeacherId { get; set; }
     public Teacher Teacher { get; set; } 

@@ -56,7 +56,8 @@ public class TeacherController(ITeacherService teacherService, ICourseService co
                 c!.Id,
                 c!.Name,
                 c.StartDate,
-                c.EndDate
+                c.EndDate,
+                c.HasUnmarkedStudents
             )
         ).ToList();
         return Ok(response);

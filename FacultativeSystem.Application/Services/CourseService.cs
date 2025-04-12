@@ -1,12 +1,13 @@
 using FacultativeSystem.Application.Abstractions;
 using FacultativeSystem.Application.Models;
 using FacultativeSystem.Domain.Entities;
+using FacultativeSystem.Domain.Repositories;
 using Mapster;
 using MapsterMapper;
 
 namespace FacultativeSystem.Application.Services;
 
-public class CourseService(ICourseRepository courseRepository, IMapper mapper): ICourseService
+public class CourseService(ICourseRepository courseRepository, IFeedbackGradeRepository feedbackGradeRepository, IMapper mapper): ICourseService
 {
     public async Task<List<Course>> GetAllCoursesAsync()
     {   
@@ -50,5 +51,11 @@ public class CourseService(ICourseRepository courseRepository, IMapper mapper): 
     {
         var courseEntity = await courseRepository.GetCourseByTeacherId(teacherId, cancellationToken);
         return mapper.Map<List<Course>>(courseEntity)!;
+    }
+
+    public async Task<Course?> GetCourseByFeedbackId(Guid feedbackId, CancellationToken cancellationToken = default)
+    {
+        var courseEntity = await courseRepository.GetCourseByFeedbackId(feedbackId, cancellationToken);
+        return mapper.Map<Course>(courseEntity);
     }
 }

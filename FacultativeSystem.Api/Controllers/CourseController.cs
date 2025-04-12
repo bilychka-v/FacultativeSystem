@@ -48,7 +48,7 @@ public class CourseController(ICourseService courseService, IFeedbackGradeServic
             (
                 Id: c.Id, 
                 Name: c.Name,
-                IsActive: c.EndDate > DateTime.Now,
+                IsActive: c.EndDate > DateTime.Now && c.StartDate < DateTime.Now,
                 TeacherName: c.Teacher?.UserName
             )
         ).ToList();
@@ -145,6 +145,14 @@ public class CourseController(ICourseService courseService, IFeedbackGradeServic
 
     public async Task<ActionResult> UpdateStudentGrades(Guid feedbackId, [FromBody] Grades grade)
     {
+        
+        var course = await courseService.GetCourseByFeedbackId(feedbackId);
+        if (course == null)
+            return NotFound("Course not found");
+        
+        if (course.EndDate > DateTime.UtcNow)
+            return BadRequest("Cannot submit grades until the course is finished.");
+        
         var grades = new FeedbackGrade()
         {
             Id = feedbackId,
