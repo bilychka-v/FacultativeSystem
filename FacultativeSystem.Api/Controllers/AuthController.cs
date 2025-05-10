@@ -2,6 +2,7 @@ using FacultativeSystem.Api.Contracts;
 using FacultativeSystem.Application.Abstractions;
 using FacultativeSystem.Application.Models;
 using FacultativeSystem.Application.Services;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using LoginRequest = Microsoft.AspNetCore.Identity.Data.LoginRequest;
@@ -11,7 +12,7 @@ namespace FacultativeSystem.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class AuthController(UserManager<IdentityUser> userManager, ITokenRepository tokenRepository, ITeacherService teacherService, IStudentService studentService): ControllerBase
+public class AuthController(UserManager<IdentityUser> userManager, ITokenRepository tokenRepository, ITeacherService teacherService, IStudentService studentService, IConfiguration configuration): ControllerBase
 {
     [HttpPost]
     [Route("login")]
@@ -26,20 +27,128 @@ public class AuthController(UserManager<IdentityUser> userManager, ITokenReposit
             {
                 var roles = await userManager.GetRolesAsync(identity);
                 
-                var jwtToken = tokenRepository.CreateJwtToken(roles.ToList(), identity);
+                var (accessToken, refreshToken) = tokenRepository.CreateJwtToken(roles.ToList(), identity);
+                
+                
+                Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTime.UtcNow.AddDays(7)
+                });
                 
                 var response = new LoginResponse(
                     Email: request.Email,
-                    Token: jwtToken,
+                    Token: accessToken,
                     Roles: roles.ToList(),
                     Id: identity.Id
                 );
                 return Ok(response);
             }
-            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
         }
-        return ValidationProblem(ModelState);
+        return Unauthorized(new { message = "Invalid email or password." });
     }
+    
+    [HttpPost("refresh-token")]
+    public IActionResult RefreshToken([FromBody] RefreshTokenRequest request)
+    {
+        try
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+            if (string.IsNullOrEmpty(refreshToken))
+            {
+                return Unauthorized("Refresh token is missing.");
+            }
+            
+            var principal = tokenRepository.GetPrincipalFromExpiredToken(refreshToken);
+            if (principal == null)
+            {
+                return Unauthorized("Invalid refresh token.");
+            }
+
+            var email = principal.Identity.Name;
+            var user = userManager.FindByEmailAsync(email).Result;
+            if (user == null)
+            {
+                return Unauthorized("User not found.");
+            }
+
+            var roles = userManager.GetRolesAsync(user).Result.ToList();
+            var (newAccessToken, newRefreshToken) = tokenRepository.CreateJwtToken(roles, user);
+            
+            Response.Cookies.Append("refreshToken", newRefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddDays(7),
+                Secure = true
+            });
+
+            return Ok(new
+            {
+                token = newAccessToken,
+                refreshToken = newRefreshToken
+            });
+        }
+        catch
+        {
+            return BadRequest("Invalid token");
+        }
+    }
+    
+    [HttpPost("loginWithGoogle")]
+public async Task<ActionResult<LoginResponse>> LoginWithGoogle([FromBody] GoogleLoginRequest request)
+{
+    if (string.IsNullOrWhiteSpace(request?.Credential))
+        return BadRequest("Credential is missing.");
+
+    Console.WriteLine($"Received credential: {request.Credential}");
+
+    var settings = new GoogleJsonWebSignature.ValidationSettings
+    {
+        Audience = new List<string> { configuration["Google:ClientId"]! }
+    };
+
+    GoogleJsonWebSignature.Payload payload;
+    try
+    {
+        payload = await GoogleJsonWebSignature.ValidateAsync(request.Credential, settings);
+    }
+    catch (InvalidJwtException ex)
+    {
+        return Unauthorized($"Invalid Google token: {ex.Message}");
+    }
+
+    var email = payload?.Email?.Trim();
+    if (string.IsNullOrEmpty(email))
+        return BadRequest("Email not found in Google payload.");
+
+    var user = await userManager.FindByEmailAsync(email);
+    
+
+
+    var roles = await userManager.GetRolesAsync(user);
+    var (accessToken, refreshToken) = tokenRepository.CreateJwtToken(roles.ToList(), user);
+
+    Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions
+    {
+        HttpOnly = true,
+        Secure = false,
+        SameSite = SameSiteMode.Strict,
+        Expires = DateTime.UtcNow.AddDays(7)
+    });
+
+    var response = new LoginResponse(
+        Email: user.Email,
+        Token: accessToken,
+        Roles: roles.ToList(),
+        Id: user.Id
+    );
+
+    return Ok(response);
+}
+
     
     [HttpPost]
     [Route("register")]
@@ -144,5 +253,6 @@ public class AuthController(UserManager<IdentityUser> userManager, ITokenReposit
         }
         return ValidationProblem(ModelState);
     }
+
 
 }
