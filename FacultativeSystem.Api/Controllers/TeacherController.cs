@@ -1,5 +1,6 @@
 using FacultativeSystem.Api.Contracts;
 using FacultativeSystem.Application.Abstractions;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FacultativeSystem.Api.Controllers;
@@ -33,13 +34,15 @@ public class TeacherController(ITeacherService teacherService, ICourseService co
         var teacher = await teacherService.GetByIdAsync(id);
         if (teacher is null)
             return NotFound();
+
+        var response = teacher.Adapt<TeacherResponse>();
     
-        var response = new TeacherResponse
-        (
-            Id : teacher.Id,
-            UserName : teacher.UserName,
-            Courses : teacher.Courses.ToList()
-        );
+        // var response = new TeacherResponse
+        // (
+        //     Id : teacher.Id,
+        //     UserName : teacher.UserName,
+        //     Courses : teacher.Courses.ToList()
+        // );
         return Ok(response);
     }
 

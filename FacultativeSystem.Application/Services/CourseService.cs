@@ -2,7 +2,6 @@ using FacultativeSystem.Application.Abstractions;
 using FacultativeSystem.Application.Models;
 using FacultativeSystem.Domain.Entities;
 using FacultativeSystem.Domain.Repositories;
-using Mapster;
 using MapsterMapper;
 
 namespace FacultativeSystem.Application.Services;
@@ -36,7 +35,7 @@ public class CourseService(ICourseRepository courseRepository, IFeedbackGradeRep
 
     public async Task<Course?> UpdateAsync(Course course, CancellationToken cancellationToken = default)
     {
-        var courseEntity = course.Adapt<CourseEntity>();
+        var courseEntity = mapper.Map<CourseEntity>(course);
         // var courseEntity = await courseRepository.GetByIdAsync(course.Id, cancellationToken);
         await courseRepository.UpdateAsync(courseEntity, cancellationToken);
         return mapper.Map<Course>(courseEntity);

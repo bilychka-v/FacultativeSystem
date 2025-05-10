@@ -15,24 +15,28 @@ public class CourseController(ICourseService courseService, IFeedbackGradeServic
     [HttpPost]
     public async Task<ActionResult<Guid>> CreateCourse([FromBody] CourseRequest courseRequest)
     {
-        var course = new Course
-        {
-            Id = Guid.NewGuid(),
-            Name = courseRequest.Name,
-            StartDate = courseRequest.StartDate.ToUniversalTime(),
-            EndDate = courseRequest.EndDate.ToUniversalTime(),
-            TeacherId = courseRequest.TeacherId
-        };
+        // var course = new Course
+        // {
+        //     Id = Guid.NewGuid(),
+        //     Name = courseRequest.Name,
+        //     StartDate = courseRequest.StartDate.ToUniversalTime(),
+        //     EndDate = courseRequest.EndDate.ToUniversalTime(),
+        //     TeacherId = courseRequest.TeacherId
+        // };
+        
+        var course = courseRequest.Adapt<Course>();
+        course.Id = Guid.NewGuid();
+        
         await courseService.CreateAsync(course);
-
-        var response = new CourseResponse
-        (
-            Id : course.Id,
-            Name : course.Name,
-            StartDate : course.StartDate,
-            EndDate : course.EndDate,
-            TeacherId: course.TeacherId
-        );
+        var response = course.Adapt<CourseResponse>();
+        // var response = new CourseResponse
+        // (
+        //     Id : course.Id,
+        //     Name : course.Name,
+        //     StartDate : course.StartDate,
+        //     EndDate : course.EndDate,
+        //     TeacherId: course.TeacherId
+        // );
         
          return Ok(response);
     }
@@ -64,14 +68,16 @@ public class CourseController(ICourseService courseService, IFeedbackGradeServic
         if (course is null)
             return NotFound();
         
-        var response = new CourseResponse
-        (
-            Id:course.Id, 
-            Name:course.Name, 
-            StartDate:course.StartDate, 
-            EndDate:course.EndDate,
-            TeacherId: course.TeacherId
-        );
+        var response = course.Adapt<CourseResponse>();
+        
+        // var response = new CourseResponse
+        // (
+        //     Id:course.Id, 
+        //     Name:course.Name, 
+        //     StartDate:course.StartDate, 
+        //     EndDate:course.EndDate,
+        //     TeacherId: course.TeacherId
+        // );
         
         return Ok(response);
     }
@@ -81,14 +87,18 @@ public class CourseController(ICourseService courseService, IFeedbackGradeServic
 
     public async Task<ActionResult> EditCourse([FromRoute] Guid id, [FromBody] CourseRequest courseRequest)
     {
-        var course = new Course()
-        {
-            Id = id,
-            Name = courseRequest.Name,
-            StartDate = courseRequest.StartDate.ToUniversalTime(),
-            EndDate = courseRequest.EndDate.ToUniversalTime(),
-            TeacherId = courseRequest.TeacherId
-        };
+        var course = courseRequest.Adapt<Course>();
+        course.Id = id;
+        // course.StartDate = courseRequest.StartDate.ToUniversalTime();
+        // course.EndDate = courseRequest.EndDate.ToUniversalTime();
+        // var course = new Course()
+        // {
+        //     Id = id,
+        //     Name = courseRequest.Name,
+        //     StartDate = courseRequest.StartDate.ToUniversalTime(),
+        //     EndDate = courseRequest.EndDate.ToUniversalTime(),
+        //     TeacherId = courseRequest.TeacherId
+        // };
         
         var courseUpdated = await courseService.UpdateAsync(course);
         var response = courseUpdated.Adapt<CourseResponse>();
@@ -100,6 +110,8 @@ public class CourseController(ICourseService courseService, IFeedbackGradeServic
     public async Task<ActionResult> DeleteCourse([FromRoute] Guid id)
     {
         var course =  await courseService.DeleteAsync(id);
+        if (course is null)
+            return NotFound();
         var response = course.Adapt<CourseResponse>();
         
         return Ok(response);
@@ -153,12 +165,13 @@ public class CourseController(ICourseService courseService, IFeedbackGradeServic
         if (course.EndDate > DateTime.UtcNow)
             return BadRequest("Cannot submit grades until the course is finished.");
         
-        var grades = new FeedbackGrade()
-        {
-            Id = feedbackId,
-            Grade = grade.Grade,
-            Feedback = grade.Feedback
-        };
+        var grades = grade.Adapt<FeedbackGrade>();
+        // var grades = new FeedbackGrade()
+        // {
+        //     Id = feedbackId,
+        //     Grade = grade.Grade,
+        //     Feedback = grade.Feedback
+        // };
         
         var gradesUpdate = await feedbackGradeService.UpdateGrades(grades);
         var response = gradesUpdate.Adapt<Grades>();
