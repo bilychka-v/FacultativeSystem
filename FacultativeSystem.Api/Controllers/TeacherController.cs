@@ -36,13 +36,7 @@ public class TeacherController(ITeacherService teacherService, ICourseService co
             return NotFound();
 
         var response = teacher.Adapt<TeacherResponse>();
-    
-        // var response = new TeacherResponse
-        // (
-        //     Id : teacher.Id,
-        //     UserName : teacher.UserName,
-        //     Courses : teacher.Courses.ToList()
-        // );
+        
         return Ok(response);
     }
 

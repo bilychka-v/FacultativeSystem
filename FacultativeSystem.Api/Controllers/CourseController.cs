@@ -1,8 +1,10 @@
+using System.Diagnostics.Metrics;
 using FacultativeSystem.Api.Contracts;
 using FacultativeSystem.Application.Abstractions;
 using FacultativeSystem.Application.Models;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FacultativeSystem.Api.Controllers;
 
@@ -15,36 +17,21 @@ public class CourseController(ICourseService courseService, IFeedbackGradeServic
     [HttpPost]
     public async Task<ActionResult<Guid>> CreateCourse([FromBody] CourseRequest courseRequest)
     {
-        // var course = new Course
-        // {
-        //     Id = Guid.NewGuid(),
-        //     Name = courseRequest.Name,
-        //     StartDate = courseRequest.StartDate.ToUniversalTime(),
-        //     EndDate = courseRequest.EndDate.ToUniversalTime(),
-        //     TeacherId = courseRequest.TeacherId
-        // };
         
         var course = courseRequest.Adapt<Course>();
         course.Id = Guid.NewGuid();
         
         await courseService.CreateAsync(course);
         var response = course.Adapt<CourseResponse>();
-        // var response = new CourseResponse
-        // (
-        //     Id : course.Id,
-        //     Name : course.Name,
-        //     StartDate : course.StartDate,
-        //     EndDate : course.EndDate,
-        //     TeacherId: course.TeacherId
-        // );
         
          return Ok(response);
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<CourseListItemDto>>> GetCourses()
+    public async Task<ActionResult<List<CourseListItemDto>>> GetCourses([FromQuery] string? courseName,
+        [FromQuery] string? sortBy, [FromQuery] string? sortDirection)
     {
-        var courses = await courseService.GetAllCoursesAsync();
+        var courses = await courseService.GetAllCoursesAsync(courseName, sortBy, sortDirection);
         
         var response = courses.Select
         (
@@ -59,7 +46,6 @@ public class CourseController(ICourseService courseService, IFeedbackGradeServic
         
         return Ok(response);
     }
-
     [HttpGet]
     [Route("{id:Guid}")]
     public async Task<ActionResult<CourseResponse>> GetCourse([FromRoute] Guid id)
@@ -69,15 +55,6 @@ public class CourseController(ICourseService courseService, IFeedbackGradeServic
             return NotFound();
         
         var response = course.Adapt<CourseResponse>();
-        
-        // var response = new CourseResponse
-        // (
-        //     Id:course.Id, 
-        //     Name:course.Name, 
-        //     StartDate:course.StartDate, 
-        //     EndDate:course.EndDate,
-        //     TeacherId: course.TeacherId
-        // );
         
         return Ok(response);
     }
@@ -89,18 +66,12 @@ public class CourseController(ICourseService courseService, IFeedbackGradeServic
     {
         var course = courseRequest.Adapt<Course>();
         course.Id = id;
-        // course.StartDate = courseRequest.StartDate.ToUniversalTime();
-        // course.EndDate = courseRequest.EndDate.ToUniversalTime();
-        // var course = new Course()
-        // {
-        //     Id = id,
-        //     Name = courseRequest.Name,
-        //     StartDate = courseRequest.StartDate.ToUniversalTime(),
-        //     EndDate = courseRequest.EndDate.ToUniversalTime(),
-        //     TeacherId = courseRequest.TeacherId
-        // };
         
         var courseUpdated = await courseService.UpdateAsync(course);
+        
+        if (courseUpdated is null)
+            return NotFound();
+        
         var response = courseUpdated.Adapt<CourseResponse>();
         return Ok(response);
     }
@@ -123,12 +94,9 @@ public class CourseController(ICourseService courseService, IFeedbackGradeServic
     {
         var grades = await feedbackGradeService.GetGradesByCourseIdAsync(courseId);
 
-        var response = grades.Select(g => new StudentGrades(
-            StudentName: g.StudentName,
-            Grade: g.Grade,
-            Feedback: g.Feedback,
-            FeedbackId: g.Id
-        )).ToList();
+        var response = grades.Select(g => 
+            g.Adapt<StudentGrades>()
+        ).ToList();
 
         return Ok(response);
     }
@@ -166,12 +134,6 @@ public class CourseController(ICourseService courseService, IFeedbackGradeServic
             return BadRequest("Cannot submit grades until the course is finished.");
         
         var grades = grade.Adapt<FeedbackGrade>();
-        // var grades = new FeedbackGrade()
-        // {
-        //     Id = feedbackId,
-        //     Grade = grade.Grade,
-        //     Feedback = grade.Feedback
-        // };
         
         var gradesUpdate = await feedbackGradeService.UpdateGrades(grades);
         var response = gradesUpdate.Adapt<Grades>();

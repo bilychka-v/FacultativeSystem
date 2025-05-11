@@ -1,10 +1,12 @@
+using System.Collections;
 using FacultativeSystem.Application.Models;
+using FacultativeSystem.Domain.Entities;
 
 namespace FacultativeSystem.Application.Abstractions;
 
 public interface ICourseService
 {
-    Task<List<Course>> GetAllCoursesAsync();
+    Task<IEnumerable<Course>> GetAllCoursesAsync(string? query = null, string? sortBy = null, string? sortDirection = null);
     Task CreateAsync(Course course, CancellationToken cancellationToken = default);
     Task<List<Student>> GetAllStudentsAsync(CancellationToken cancellationToken = default);
     Task<Course?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);

@@ -1,3 +1,4 @@
+using System.Collections;
 using FacultativeSystem.Application.Abstractions;
 using FacultativeSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -13,15 +14,35 @@ public class CourseRepository(DataAccess context) : ICourseRepository
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<List<CourseEntity>> GetAllCoursesAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<CourseEntity>> GetAllCoursesAsync(string? query, string? sortBy, string? sortDirection, CancellationToken cancellationToken = default)
     {
-        var coursesEntities = await context.Courses
-            .AsNoTracking()
-            .Include(c=>c.Teacher)
-            .ToListAsync(cancellationToken);
-        return coursesEntities;
-    }
+        var utcNow = DateTime.UtcNow;
+        var queryCourses = context.Courses
+            .Include(c=> c.Teacher)
+            .AsQueryable();
 
+        if (string.IsNullOrEmpty(query) == false)
+        {
+            queryCourses = queryCourses
+                .Where(course => course.Name.Contains(query));
+        }
+
+        if (string.IsNullOrEmpty(sortBy) == false)
+        {
+            if (string.Equals(sortBy, "Name", StringComparison.OrdinalIgnoreCase) )
+            {
+                var isAsc = string.Equals(sortDirection, "ASC", StringComparison.OrdinalIgnoreCase) ? true : false;
+                queryCourses = isAsc ? queryCourses.OrderBy(c => c.Name) : queryCourses.OrderByDescending(c => c.Name);
+            }
+
+            if (string.Equals(sortBy, "isActive", StringComparison.OrdinalIgnoreCase))
+            {
+                var isAsc = string.Equals(sortDirection, "ASC", StringComparison.OrdinalIgnoreCase) ? true : false;
+                queryCourses = isAsc ? queryCourses.OrderBy(c => c.EndDate > utcNow && c.StartDate < utcNow) : queryCourses.OrderBy(c => c.EndDate < utcNow );
+            }
+        }
+        return await queryCourses.ToListAsync(cancellationToken);
+    }
     public async Task<List<StudentEntity>> GetAllStudentsAsync(CancellationToken cancellationToken = default)
     {
         var studentEntities = await context.Students

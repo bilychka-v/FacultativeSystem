@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Sieve.Services;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,7 +41,6 @@ builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 
 builder.Services.RegisterMappings();
 
-builder.Services.AddSingleton<SieveProcessor>();
 
 builder.Services.AddIdentityCore<IdentityUser>()
     .AddRoles<IdentityRole>()

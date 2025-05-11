@@ -1,3 +1,4 @@
+using System.Collections;
 using FacultativeSystem.Application.Abstractions;
 using FacultativeSystem.Application.Models;
 using FacultativeSystem.Domain.Entities;
@@ -8,10 +9,10 @@ namespace FacultativeSystem.Application.Services;
 
 public class CourseService(ICourseRepository courseRepository, IFeedbackGradeRepository feedbackGradeRepository, IMapper mapper): ICourseService
 {
-    public async Task<List<Course>> GetAllCoursesAsync()
+    public async Task<IEnumerable<Course>> GetAllCoursesAsync(string? query = null, string? sortBy = null, string? sortDirection = null)
     {   
-        var coursesEntities = await courseRepository.GetAllCoursesAsync();
-        return mapper.Map<List<Course>>(coursesEntities);
+        var coursesEntities = await courseRepository.GetAllCoursesAsync(query, sortBy, sortDirection);
+        return mapper.Map<IEnumerable<Course>>(coursesEntities);
     }
 
     public async Task CreateAsync(Course course, CancellationToken cancellationToken = default)

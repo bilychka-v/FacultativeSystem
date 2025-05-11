@@ -1,3 +1,5 @@
+using Sieve.Attributes;
+
 namespace FacultativeSystem.Api.Contracts;
 
 public record CourseListItemDto(

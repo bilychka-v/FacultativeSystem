@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace FacultativeSystem.Application.Models;
 
 public class Course
