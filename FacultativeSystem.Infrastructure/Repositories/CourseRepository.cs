@@ -35,10 +35,13 @@ public class CourseRepository(DataAccess context) : ICourseRepository
                 queryCourses = isAsc ? queryCourses.OrderBy(c => c.Name) : queryCourses.OrderByDescending(c => c.Name);
             }
 
-            if (string.Equals(sortBy, "isActive", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(sortBy, "Date", StringComparison.OrdinalIgnoreCase))
             {
                 var isAsc = string.Equals(sortDirection, "ASC", StringComparison.OrdinalIgnoreCase) ? true : false;
-                queryCourses = isAsc ? queryCourses.OrderBy(c => c.EndDate > utcNow && c.StartDate < utcNow) : queryCourses.OrderBy(c => c.EndDate < utcNow );
+                queryCourses = isAsc
+                    ? queryCourses.OrderBy(c => c.StartDate) 
+                    : queryCourses.OrderByDescending(c => c.EndDate);
+
             }
         }
         return await queryCourses.ToListAsync(cancellationToken);
