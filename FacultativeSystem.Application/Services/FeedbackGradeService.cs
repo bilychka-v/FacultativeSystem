@@ -18,9 +18,9 @@ public class FeedbackGradeService(IMapper mapper, IFeedbackGradeRepository repos
         return mapper.Map<List<FeedbackGrade>>(feedbackGrades);
     }
 
-    public async Task<List<FeedbackGrade>> GetGradesByCourseIdAsync(Guid courseId)
+    public async Task<List<FeedbackGrade>> GetGradesByCourseIdAsync(Guid courseId, string? sortByGrade, string? sortDirection)
     {
-        var grades = await repository.GetGradesByCourseId(courseId);
+        var grades = await repository.GetGradesByCourseId(courseId, sortByGrade, sortDirection);
         return mapper.Map<List<FeedbackGrade>>(grades);
         
     }

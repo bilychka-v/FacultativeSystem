@@ -16,7 +16,6 @@ public class CourseRepository(DataAccess context) : ICourseRepository
 
     public async Task<IEnumerable<CourseEntity>> GetAllCoursesAsync(string? query, string? sortBy, string? sortDirection, CancellationToken cancellationToken = default)
     {
-        var utcNow = DateTime.UtcNow;
         var queryCourses = context.Courses
             .Include(c=> c.Teacher)
             .AsQueryable();

@@ -30,12 +30,22 @@ public class FeedbackGradeRepository : IFeedbackGradeRepository
             .ToListAsync());
     }
     
-    public async Task<List<FeedbackGradeEntity>> GetGradesByCourseId(Guid courseId, CancellationToken cancellationToken = default)
+    public async Task<List<FeedbackGradeEntity>> GetGradesByCourseId(Guid courseId, string? sortByGrade, string? sortDirection, CancellationToken cancellationToken = default)
     {
-        return await _context.FeedbackGradeEntities
+        var queryGrades = _context.FeedbackGradeEntities
             .Include(g => g.Student)
-            .Where(g => g.CourseId == courseId)
-            .ToListAsync(cancellationToken);
+            .Where(g => g.CourseId == courseId);
+
+        if (string.IsNullOrEmpty(sortByGrade) == false)
+        {
+            if (string.Equals(sortByGrade, "Grade", StringComparison.OrdinalIgnoreCase))
+            {
+                var isAsc = string.Equals(sortDirection, "asc", StringComparison.OrdinalIgnoreCase);
+                queryGrades = isAsc ? queryGrades.OrderBy(c => c.Grade) : queryGrades.OrderByDescending(c => c.Grade);
+            }
+        }
+        
+        return await queryGrades.ToListAsync(cancellationToken);
     }
     public async Task<FeedbackGradeEntity> UpdateGrades(FeedbackGradeEntity feedbackGrades, CancellationToken cancellationToken = default)
     {

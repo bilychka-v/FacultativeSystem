@@ -90,9 +90,9 @@ public class CourseController(ICourseService courseService, IFeedbackGradeServic
 
     [HttpGet]
     [Route("{courseId:Guid}/grades")]
-    public async Task<ActionResult<List<StudentGrades>>> GetStudentGradesByCourseId(Guid courseId)
+    public async Task<ActionResult<List<StudentGrades>>> GetStudentGradesByCourseId(Guid courseId, [FromQuery] string? sortByGrade, [FromQuery] string? sortDirection)
     {
-        var grades = await feedbackGradeService.GetGradesByCourseIdAsync(courseId);
+        var grades = await feedbackGradeService.GetGradesByCourseIdAsync(courseId, sortByGrade, sortDirection);
 
         var response = grades.Select(g => new StudentGrades
         (
