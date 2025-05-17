@@ -16,6 +16,8 @@ public static class MapsterConfiguration
             .Map(dest => dest.StartDate, src => src.StartDate.ToUniversalTime())
             .Map(dest => dest.EndDate, src => src.EndDate.ToUniversalTime());
         
+        config.NewConfig<StudentEntity, Student>();
+
         config.NewConfig<FeedbackGradeEntity, FeedbackGrade>()
             .Map(dest => dest.Student, src => src.Student);
         
