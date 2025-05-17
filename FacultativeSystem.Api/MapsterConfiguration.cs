@@ -20,6 +20,12 @@ public static class MapsterConfiguration
 
         config.NewConfig<FeedbackGradeEntity, FeedbackGrade>()
             .Map(dest => dest.Student, src => src.Student);
+
+        config.NewConfig<CourseEntity, Course>();
+        
+        config.NewConfig<TeacherEntity, Teacher>()
+            .Map(dest => dest.Courses, src => src.Courses.Select(c=>c.Name) ?? new List<string>());
+
         
         services.AddSingleton(config);
         services.AddScoped<IMapper, ServiceMapper>();
