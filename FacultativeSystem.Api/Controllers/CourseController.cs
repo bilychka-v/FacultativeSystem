@@ -94,9 +94,13 @@ public class CourseController(ICourseService courseService, IFeedbackGradeServic
     {
         var grades = await feedbackGradeService.GetGradesByCourseIdAsync(courseId);
 
-        var response = grades.Select(g => 
-            g.Adapt<StudentGrades>()
-        ).ToList();
+        var response = grades.Select(g => new StudentGrades
+        (
+            StudentName : g.Student?.UserName ?? "Unknown",
+            Grade : g.Grade,
+            Feedback : g.Feedback,
+            FeedbackId : g.Id
+        )).ToList();
 
         return Ok(response);
     }
@@ -125,16 +129,28 @@ public class CourseController(ICourseService courseService, IFeedbackGradeServic
 
     public async Task<ActionResult> UpdateStudentGrades(Guid feedbackId, [FromBody] Grades grade)
     {
-        
+
         var course = await courseService.GetCourseByFeedbackId(feedbackId);
         if (course == null)
             return NotFound("Course not found");
-        
+
         if (course.EndDate > DateTime.UtcNow)
             return BadRequest("Cannot submit grades until the course is finished.");
-        
-        var grades = grade.Adapt<FeedbackGrade>();
-        
+
+        var grades = new FeedbackGrade()
+        {
+            Id = feedbackId,
+            Grade = grade.Grade,
+            Feedback = grade.Feedback
+        };
+        // var grades = grade.Adapt<FeedbackGrade>();
+        // var grades = new FeedbackGrade()
+        // {
+        //     Id = feedbackId,
+        //     Grade = grade.Grade,
+        //     Feedback = grade.Feedback
+        // };
+
         var gradesUpdate = await feedbackGradeService.UpdateGrades(grades);
         var response = gradesUpdate.Adapt<Grades>();
         return Ok(response);

@@ -11,8 +11,8 @@ public class FeedbackGrade
     
     // FeedbackGradeEntity 1--> StudentEntities
     public Guid StudentId { get; set; }
-    public Student Student { get; set; }
-    public string StudentName { get; set; } = string.Empty;
+    public Student? Student { get; set; }
+    public string? StudentName { get; set; } = string.Empty;
     
     // FeedbackGradeEntity 1--> CourseEntities
     public Guid CourseId { get; set; }

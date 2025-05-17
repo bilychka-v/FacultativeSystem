@@ -32,7 +32,7 @@ public class StudentRepository(DataAccess context, ILogger<StudentRepository> _l
          return studentEntity;
     }
 
-    public async Task<Guid> UpdateAsync(Guid id, string name, CancellationToken cancellationToken = default)
+    public async Task<Guid> UpdateAsync(Guid id, string? name, CancellationToken cancellationToken = default)
     {
         var studentEntity = await context.Students.FindAsync( id, cancellationToken);
         if(studentEntity is null) throw new Exception("Student not found");

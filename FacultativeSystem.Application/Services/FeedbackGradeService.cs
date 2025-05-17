@@ -23,7 +23,7 @@ public class FeedbackGradeService(IMapper mapper, IFeedbackGradeRepository repos
         var grades = await repository.GetGradesByCourseId(courseId);
         return grades.Select(g => new FeedbackGrade
         {
-            StudentName = g.Student.UserName,
+            Student = g.Student == null ? null : mapper.Map<Student>(g.Student),
             Grade = g.Grade,
             Feedback = g.Feedback,
             Id = g.Id

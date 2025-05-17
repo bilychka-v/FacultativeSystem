@@ -27,7 +27,7 @@ public class FeedbackGradeRepository : IFeedbackGradeRepository
         return (await _context.FeedbackGradeEntities
             .Include(f => f.Course)
             .Where(f => f.StudentId == studentId)
-            .ToListAsync())!;
+            .ToListAsync());
     }
     
     public async Task<List<FeedbackGradeEntity>> GetGradesByCourseId(Guid courseId, CancellationToken cancellationToken = default)
@@ -37,7 +37,7 @@ public class FeedbackGradeRepository : IFeedbackGradeRepository
             .Where(g => g.CourseId == courseId)
             .ToListAsync(cancellationToken);
     }
-    public async Task<FeedbackGradeEntity?> UpdateGrades(FeedbackGradeEntity feedbackGrades, CancellationToken cancellationToken = default)
+    public async Task<FeedbackGradeEntity> UpdateGrades(FeedbackGradeEntity feedbackGrades, CancellationToken cancellationToken = default)
     {
         var feedback = await _context.FeedbackGradeEntities.FindAsync(feedbackGrades.Id);
 
