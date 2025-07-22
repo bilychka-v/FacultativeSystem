@@ -28,7 +28,7 @@ namespace FacultativeSystem.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("EndDate")
+                    b.Property<DateTime?>("EndDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("HasUnmarkedStudents")
@@ -38,7 +38,7 @@ namespace FacultativeSystem.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("StartDate")
+                    b.Property<DateTime?>("StartDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid?>("TeacherId")
@@ -92,7 +92,6 @@ namespace FacultativeSystem.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("UserName")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");

@@ -1,6 +1,7 @@
 using FacultativeSystem.Api.Contracts;
 using FacultativeSystem.Application.Abstractions;
 using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FacultativeSystem.Api.Controllers;

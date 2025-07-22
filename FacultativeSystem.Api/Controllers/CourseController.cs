@@ -3,6 +3,7 @@ using FacultativeSystem.Api.Contracts;
 using FacultativeSystem.Application.Abstractions;
 using FacultativeSystem.Application.Models;
 using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +18,10 @@ public class CourseController(ICourseService courseService, IFeedbackGradeServic
     [HttpPost]
     public async Task<ActionResult<Guid>> CreateCourse([FromBody] CourseRequest courseRequest)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
         
         var course = courseRequest.Adapt<Course>();
         course.Id = Guid.NewGuid();
@@ -58,7 +63,8 @@ public class CourseController(ICourseService courseService, IFeedbackGradeServic
         
         return Ok(response);
     }
-
+    
+    
     [HttpPut]
     [Route("{id:Guid}")]
 
@@ -75,7 +81,8 @@ public class CourseController(ICourseService courseService, IFeedbackGradeServic
         var response = courseUpdated.Adapt<CourseResponse>();
         return Ok(response);
     }
-
+    
+    
     [HttpDelete]
     [Route("{id:Guid}")]
     public async Task<ActionResult> DeleteCourse([FromRoute] Guid id)
@@ -87,7 +94,8 @@ public class CourseController(ICourseService courseService, IFeedbackGradeServic
         
         return Ok(response);
     }
-
+    
+    
     [HttpGet]
     [Route("{courseId:Guid}/grades")]
     public async Task<ActionResult<List<StudentGrades>>> GetStudentGradesByCourseId(Guid courseId, [FromQuery] string? sortByGrade, [FromQuery] string? sortDirection)
@@ -104,7 +112,7 @@ public class CourseController(ICourseService courseService, IFeedbackGradeServic
 
         return Ok(response);
     }
-    
+   
     [HttpGet]
     [Route("{feedbackId:Guid}/feedback")]
     public async Task<ActionResult<FeedbackResponse>> GetFeedback([FromRoute] Guid feedbackId)
@@ -122,8 +130,7 @@ public class CourseController(ICourseService courseService, IFeedbackGradeServic
         
         return Ok(response);
     }
-
-
+    
     [HttpPut]
     [Route("{feedbackId:Guid}/grades")]
 
@@ -143,13 +150,6 @@ public class CourseController(ICourseService courseService, IFeedbackGradeServic
             Grade = grade.Grade,
             Feedback = grade.Feedback
         };
-        // var grades = grade.Adapt<FeedbackGrade>();
-        // var grades = new FeedbackGrade()
-        // {
-        //     Id = feedbackId,
-        //     Grade = grade.Grade,
-        //     Feedback = grade.Feedback
-        // };
 
         var gradesUpdate = await feedbackGradeService.UpdateGrades(grades);
         var response = gradesUpdate.Adapt<Grades>();

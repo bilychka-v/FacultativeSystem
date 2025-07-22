@@ -5,6 +5,7 @@ using FacultativeSystem.Domain.Entities;
 using FacultativeSystem.Infrastructure;
 using Mapster;
 using MapsterMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FacultativeSystem.Api.Controllers;

@@ -18,6 +18,11 @@ public class AuthController(UserManager<IdentityUser> userManager, ITokenReposit
     [Route("login")]
     public async Task<ActionResult> Login([FromBody] LoginRequest request)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        
         var identity = await userManager.FindByEmailAsync(request.Email);
         if (identity is not null)
         {
